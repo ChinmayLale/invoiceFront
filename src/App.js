@@ -20,7 +20,7 @@ function App() {
       };
       const data = getUserData();
       console.log(data);
-      if(data.userName==='admin' && data.pass === 'admin'){
+      if(data.userName===null && data.pass === null){
         setIsLogedIn(true);
       }
       else{

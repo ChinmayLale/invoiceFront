@@ -40,7 +40,7 @@ function Invoice() {
       UserAddressL2: '',
       UserAddressL3: '',
       UserCountry: '',
-      Date: Date(),
+      Date: Date().toLowerCase(),
       InvoiceDesc: '',
       Conditions: ''
     }
