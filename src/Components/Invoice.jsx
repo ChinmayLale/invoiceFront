@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useReactToPrint } from 'react-to-print';
 import axios from 'axios';
 
@@ -16,7 +16,8 @@ function Invoice() {
 
 
   const [userIMG, setUserIMG] = useState(null);
-  const [invoiceID, setInvoiceID] = useState(255);
+  const [invoiceID, setInvoiceID] = useState('');
+  const[date , setDate] = useState('');
   const [tableData, setTableData] = useState([
     {
       itemId: 1,
@@ -29,6 +30,7 @@ function Invoice() {
   const [invoicedata, setInvoiceData] = useState([
     {
       tableData,
+      invoiceID:'',
       CompanyName: '',
       OwnerName: '',
       CompanyAddressL1: '',
@@ -38,9 +40,9 @@ function Invoice() {
       UserName: '',
       UserAddressL1: '',
       UserAddressL2: '',
-      UserAddressL3: '',
+      UserContact: '',
       UserCountry: '',
-      Date: Date().toLowerCase(),
+      Date: Date(),
       InvoiceDesc: '',
       Conditions: ''
     }
@@ -49,9 +51,15 @@ function Invoice() {
 
   // ======================================= Generate Invoice ID Here ==============================================
 
-  // useEffect(()=>{
-  //     axios.get('http://localhost:8000/get').then((data)=>{console.log(data.data);setInvoiceID(data.data)}).then(()=>{console.log("Invoice ID : "+invoiceID)})
-  // },[invoiceID])
+useEffect(()=>{
+  const temp = new Date()
+  const invoiceNumber = temp.getTime()
+  setInvoiceID(invoiceNumber);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  setDate(temp.toLocaleDateString('en-US', options));
+},[])
+
+
 
 
   // ========================================Table Functions========================================================
@@ -117,8 +125,8 @@ function Invoice() {
       <div className=" border-gray-400 border-2 pl-6 pr-6 bg-white w-[100%]" ref={contentToPrint}>
         <div className="flex justify-between items-end pb-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold">Invoice #{invoiceID}</h1>
-            <p className="text-xs">January 1, 2025</p>
+            <h1 className="text-2xl font-bold">Invoice #<input type="number" className="text-left" onChange={handleInvoiceDataChange} placeholder={invoiceID} id='invoiceID' value={invoicedata.invoiceID} name="invoiceID" /></h1>
+            <p className="text-xs">{date}</p>
           </div>
           <div onClick={handleLogoClick}>
             {userIMG && <img src={userIMG} alt="" className="relative bg-cover w-[100px] h-[100px]" />}
@@ -148,6 +156,7 @@ function Invoice() {
             <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 1" id='UserAddressL1' value={invoicedata.UserAddressL1} name="UserAddressL1" />,</p>
             <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 2" id='UserAddressL2' value={invoicedata.UserAddressL2} name="UserAddressL2" />,</p>
             <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="City , State , Country" id='UserCountry' value={invoicedata.UserCountry} name="UserCountry" /></p>
+            <p className="p-0 mb-1"><input type="number" className="text-left" onChange={handleInvoiceDataChange} placeholder="Contact Number" id='UserContact' value={invoicedata.UserContact} name="UserContact" /></p>
           </div>
         </div>
         <div className="h-px bg-gray-300 my-4" />

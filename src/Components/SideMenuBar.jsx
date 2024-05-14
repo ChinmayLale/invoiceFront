@@ -21,6 +21,21 @@ function SideMenuBar() {
                     </ul>
                 </div>
 
+                <div className="sideBarMenu mb-[10px]">
+                    <h3 className="sideBarTitle text-md text-gray-400 font-semibold ">Default Saved Company</h3>
+                    <ul className="sideBarList p-[5px]">
+                        <Link to="/" className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200  hover:scale-105 duration-100  hover:text-sky-950">
+                            Company A
+                        </Link>
+                        <Link to='/newInvoice' className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200   hover:scale-105 duration-100  hover:text-sky-950">
+                            Company B
+                        </Link>
+                        <Link to='/history'className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200   hover:scale-105 duration-100  hover:text-sky-950">
+                            Company C
+                        </Link>
+                    </ul>
+                </div>
+
                 
 
             </div>
