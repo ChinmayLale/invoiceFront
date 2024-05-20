@@ -6,6 +6,7 @@ import DashBoard from "./Components/DashBoard";
 import { Route , Routes } from "react-router-dom";
 import SideMenuBar from "./Components/SideMenuBar";
 import HistoryInvoices from "./Components/HistoryInvoices";
+import AddCompany from "./Components/AddCompany";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
               <Route path="/" element={<DashBoard />} />
               <Route path="/newInvoice" element={<Invoice />} />
               <Route path="/history" element={<HistoryInvoices />} />
+              <Route path="/addCompany" element={<AddCompany/>} />
             </Routes>
           </div>
       </>

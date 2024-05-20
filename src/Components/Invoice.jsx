@@ -76,6 +76,21 @@ useEffect(()=>{
     console.log(currentCost);
   };
 
+  // const handleInputChange = (e, rowIndex) => {
+  //   const { name, value } = e.target;
+  //   const updatedTableData = [...tableData];
+  //   const row = updatedTableData[rowIndex];
+  
+  //   // Update the corresponding field in the row object
+  //   row[name] = value;
+  
+  //   // Calculate the cost and update the row object
+  //   row.itemCost = row.itemAmount * row.itemQuant;
+  
+  //   // Update the state with the new tableData
+  //   setTableData(updatedTableData);
+  // };
+
   const handleAddRow = () => {
     const newRow = {
       itemId: tableData.length + 1,

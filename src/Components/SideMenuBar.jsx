@@ -18,6 +18,9 @@ function SideMenuBar() {
                         <Link to='/history'className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200   hover:scale-105 duration-100  hover:text-sky-950">
                             History
                         </Link>
+                        <Link to='/addcompany'className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200   hover:scale-105 duration-100  hover:text-sky-950">
+                            Add Company
+                        </Link>
                     </ul>
                 </div>
 

@@ -27,7 +27,7 @@ function HistoryInvoices() {
         // Fetch data every 1 minute
         const intervalId = setInterval(fetchData, 10000);
       
-        // Clean up the interval when the component unmounts
+        //CleanUp 
         return () => clearInterval(intervalId);
       }, []);
 
@@ -38,7 +38,9 @@ function HistoryInvoices() {
             data = rowData.map((obj, index ) => ({
                     id : index +1,
                     UserName : obj.UserName,
-                    invoiceID: obj.invoiceID ? obj.invoiceID : '455'
+                    invoiceID: obj.invoiceID ? obj.invoiceID : '455',
+                    UserContact:obj.UserContact ? obj.UserContact :'999999999',
+                    Status: 'Paid'
                 })); 
             setTableData(data); 
             console.log("Filtered Data : ");
@@ -53,7 +55,20 @@ function HistoryInvoices() {
     const columns = [
         {field: 'id', headerName: 'ID', width: 70 }, 
         {field:'UserName' , headerName:'UserName' , width:150},  
-        {field: 'invoiceID' , headerName:'Invoice Id' , width:100} 
+        {field: 'invoiceID' , headerName:'Invoice Id' , width:100},
+        {field :'UserContact' , headerName:'UserContact' ,width:100},
+        {
+            field : 'Current Status' , 
+            headerName:'Status',
+            width:60,
+            renderCell : (params)=>{
+                return(
+                <>
+                    <button className='bg bg-green-300 m-1 h-[80%] text-center w-[100%] pb-2 rounded-lg'>Paid</button>
+                </>
+                )
+            }
+        }
     ];
 
 
@@ -77,7 +92,7 @@ function HistoryInvoices() {
                         }}
                         pageSizeOptions={[5 ,8, 10]}
                         checkboxSelection
-                        
+                        autosizeOnMount
                     />}
                 </div>
             </div>
