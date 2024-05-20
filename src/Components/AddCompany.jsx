@@ -12,7 +12,7 @@ function AddCompany() {
     const [country, setcountry] = useState('')
 
     const handleDefalut = async (e) =>{
-        // e.preventDefault();
+        e.preventDefault();
         const data = {companyName , ownerName , email , gstNumber , contactNumber , addState , country}
         try {
             const response = await axios.post("http://localhost:8000/addcompany", data);
