@@ -1,131 +1,42 @@
-<div className="w-[100%] h-[100vh] flex flex-col items-center justify-start p-[20px] font-sans bg-white">
-        <h1 className="text-4xl font-normal  mb-4 text-gray-800 ">
-          Invoice Generator
-        </h1>
-        <div className="relative container w-[40%] h-full bg-gray-50 flex flex-col items-left justify-start border-solid border-2 shadow-sm p-[20px] ">
-          <h2 className="text-4xl font-semibold  absolute top-0 right-2 text-gray-500" >Invoice</h2>
-          <div className="relative logo w-[80px] h-[100px] bg-red-100 flex flex-col items-center justify-center cursor-pointer" contentEditable='false' onClick={handleLogoClick}>
-            {userIMG && <img src={userIMG} alt="" className="absolute w-full h-full bg-cover" />}
-            {!userIMG && <><input type="file" className="relative hidden" onInput={(e) => { handleFileChange(e) }} id='fileinp' />
-              logo </>}
-          </div>
-          <div className="outDetails flex flex-col ">
-            <input type="text" className="text-gray-500 hover:bg-yellow-100 mt-3 w-[45%]" onChange={handleCompanyChange} placeholder="Company Name" id='companyName' value={company} />
-            <input type="text" className="text-gray-500 hover:bg-yellow-100 mt-3 w-[55%] focus:border-none active:border-none" onChange={handleOwnerChange} placeholder="Your Name" id="c_owner" value={cowner} />
-            <input type="text" className="text-gray-500 hover:bg-yellow-100 mt-3 w-[55%] focus:border-none active:border-none" onChange={handleaddChange} placeholder="City,State,zip" id="c_add" value={companyadd} />
-          </div>
-
-          <div className="userInfo flex flex-col mt-11">
-            <h3 className="text-lg font-bold  mb-4 text-gray-800 ">Bill to :</h3>
-          </div>
-        </div>
-      </div>
-
-
-
-
-
-
-
-      <svg
-            xmlns="http://www.w3.org/2000/svg"
-            x="0"
-            y="0"
-            enableBackground="new 0 0 46.15 9.31"
-            version="1.1"
-            viewBox="0 0 46.15 9.31"
-            xmlSpace="preserve"
-            fill="black"
-            className="w-[100px] "
-          >
-            <path d="M10 9.13V2.55h1.83v.91c.35-.62 1.13-1.09 2.07-1.09.71 0 1.32.24 1.81.71s.74 1.15.74 2.03v4.02h-1.88V5.6c0-.96-.5-1.5-1.28-1.5-.85 0-1.42.62-1.42 1.55v3.48H10zM23.84 6.48h-4.83c.23.83.83 1.24 1.79 1.24.74 0 1.43-.22 2.05-.64l.74 1.28c-.8.61-1.76.91-2.88.91-1.16 0-2.05-.34-2.67-1-.61-.66-.92-1.47-.92-2.45 0-1 .32-1.81.96-2.46.64-.66 1.48-.98 2.51-.98.97 0 1.76.3 2.39.89.62.59.94 1.39.94 2.41-.01.23-.04.5-.08.8zM19 5.13h3.09c-.18-.76-.73-1.22-1.51-1.22-.76 0-1.38.46-1.58 1.22zM29.43 0h1.88v9.13h-1.82v-.71c-.52.59-1.16.88-1.96.88-.92 0-1.69-.32-2.31-.98-.61-.66-.92-1.47-.92-2.47 0-.98.31-1.8.92-2.46.62-.66 1.39-1 2.31-1 .74 0 1.38.26 1.89.8V0zm-.39 4.6c-.31-.34-.71-.5-1.2-.5s-.89.17-1.21.5c-.31.34-.47.74-.47 1.22 0 .49.16.91.47 1.25.32.34.72.5 1.21.5s.89-.17 1.2-.5c.32-.34.48-.76.48-1.25 0-.47-.15-.88-.48-1.22zM33.03 8.31c-.66-.67-.98-1.5-.98-2.47s.32-1.8.98-2.46c.66-.67 1.51-1.01 2.55-1.01 1.04 0 1.91.34 2.57 1.01.66.66 1 1.49 1 2.46s-.34 1.8-1 2.47c-.66.66-1.52 1-2.57 1-1.04 0-1.89-.34-2.55-1zm3.74-3.68c-.32-.34-.72-.5-1.19-.5s-.86.17-1.19.5c-.32.32-.48.73-.48 1.2 0 .49.16.9.48 1.24.32.32.72.49 1.19.49s.86-.17 1.19-.49c.32-.34.49-.74.49-1.24 0-.47-.17-.88-.49-1.2zM40.5 8.31c-.65-.65-.97-1.47-.97-2.48s.32-1.83.98-2.47c.66-.65 1.5-.97 2.54-.97 1.36 0 2.55.67 3.09 1.87l-1.5.8c-.38-.62-.9-.94-1.56-.94-.49 0-.89.17-1.21.49-.32.32-.48.73-.48 1.21 0 .49.16.91.47 1.24.32.32.72.48 1.2.48.66 0 1.27-.38 1.55-.92l1.52.9c-.58 1.07-1.74 1.75-3.12 1.75-1.02 0-1.86-.32-2.51-.96zM9.26 4.7c0-1.29-.44-2.36-1.34-3.25C7.03.55 5.94.1 4.63.1c-1.3 0-2.39.45-3.29 1.35C.45 2.34 0 3.43 0 4.71c0 .37.05.72.12 1.05l4.3-3.39h2.22v6.46c.47-.22.9-.5 1.29-.88.89-.89 1.33-1.97 1.33-3.25z"></path>
-            <path d="M1.49 8.09c.62.56 1.34.94 2.17 1.1v-2.8l-2.17 1.7z"></path>
-          </svg>
-
-===================================================================================================================
-
-
-<tbody>
-  <tr class="border-b border-gray-300 bg-slate-300"><th class="text-left font-bold py-2 ">Item</th><th class="text-left font-bold py-2">Description</th><th class="text-left font-bold py-2">Unit Price</th><th class="text-left font-bold py-2">Quantity</th><th class="text-left font-bold py-2">Amount</th></tr><tr class="border-b border-gray-300 "><td class="py-2">1</td><td class="py-2">Onedoc Startup Subscription</td><td class="py-2">$100</td><td class="py-2">1</td><td class="py-2">$100</td></tr><tr class="border-b border-gray-300 "><td class="py-2">1</td><td class="py-2">Onedoc Startup Subscription</td><td class="py-2">$100</td><td class="py-2">1</td><td class="py-2">$100</td></tr> <tr classname="border-b border-gray-300 ">
-    <td classname="py-2">1</td>
-    <td classname="py-2">Onedoc Startup Subscription</td>
-    <td classname="py-2">$100</td>
-    <td classname="py-2">1</td>
-    <td classname="py-2">$100</td>
-  </tr></tbody>
-
-<input type="text" placeholder="1" value='1' id="itemID"/>
-
-
-
-
-
-
-
-<tr className="border-b border-gray-300 bg-slate-300">
-            <th className="text-left font-bold py-2 ">Item</th>
-            <th className="text-left font-bold py-2">Description</th>
-            <th className="text-left font-bold py-2">Unit Price</th>
-            <th className="text-left font-bold py-2">Quantity</th>
-            <th className="text-left font-bold py-2">Amount</th>
-          </tr>
-
-          <tr className="border-b border-gray-300 ">
-            <td className="py-2"><input type="text" placeholder="1" value='1' id="itemID" className="w-[25px]"/></td>
-            <td className="py-2"><input type="text" placeholder="Onedoc Startup Subscription" className="w-[220px]" id="itemName" /></td>
-            <td className="py-2">$<input type="text" placeholder="100" className="w-[25px]" id='itemAmount'/></td>
-            <td className="py-2"><input type="text" placeholder="5" className="w-[25px]" id="itemQuant" /></td>
-            <td className="py-2">${itemValue}</td>
-          </tr>
-
-          <tr className="border-b border-gray-300 ">
-            <td className="py-2">1</td>
-            <td className="py-2">Onedoc Startup Subscription</td>
-            <td className="py-2">$100</td>
-            <td className="py-2">1</td>
-            <td className="py-2">$100</td>
-          </tr>
-
-
-
-
-
-
-
-x + y = 10
-z + y = 20
-x + z = 24
-x + y + z = ?
-
-
-
- // useEffect(() => {
-    //     axios.get('http://localhost:8000/tableData')
-    //         .then((db)=>{
-    //             // console.log(db);
-    //             const d = db.data;
-    //             setRowData(d);
-    //             console.log("Data Set")
-    //             console.log(db);
-    //         })
-    //         .then(()=>{
-    //                 console.log("Data Isss");  
-    //                 console.log(rowData)
-    //         })
-    // },[])
-
-
-    // const rows = [
-    //     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    //     { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    //     { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    //     { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    //     { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    //     { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    //     { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    //     { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    //     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-    // ];
-
-
-
+[
+    {
+        "companyName": "Connelly, Thompson and Pfeffer"        "Description": "Object-Based 3Rdgeneration Database"        "Tagline": "Deploy Virtual Supply-Chains"        "Company Email": "mabel78@howe.com"        "Ein": "95-3508659"    },
+    {
+        "companyName": "Mitchell, Luettgen and Carroll"        "Description": "Open-Architected Local Software"        "Tagline": "Embrace Ubiquitous Convergence"        "Company Email": "bernier.antonio@bahringer.com"        "Ein": "34-3881185"    },
+    {
+        "companyName": "Feil, Jenkins and Runolfsdottir"        "Description": "Ameliorated Even-Keeled Artificialintelligence"        "Tagline": "Expedite Turn-Key Mindshare"        "Company Email": "bwalker@zulauf.biz"        "Ein": "24-2670493"    },
+    {
+        "companyName": "McDermott Inc"        "Description": "User-Friendly Reciprocal Website"        "Tagline": "Incentivize Turn-Key Synergies"        "Company Email": "jaime.braun@bashirian.org"        "Ein": "87-4728827"    },
+    {
+        "companyName": "Hayes-Sawayn"        "Description": "Cloned 4Thgeneration Customerloyalty"        "Tagline": "Recontextualize End-To-End Content"        "Company Email": "crystel76@kris.com"        "Ein": "65-8692993"    },
+    {
+        "companyName": "Cassin and Sons"        "Description": "Customer-Focused 6Thgeneration Firmware"        "Tagline": "Deliver Granular Experiences"        "Company Email": "roxane.wolf@marvin.com"        "Ein": "71-4306414"    },
+    {
+        "companyName": "Treutel and Sons"        "Description": "Compatible Composite Productivity"        "Tagline": "Disintermediate Innovative Convergence"        "Company Email": "hpadberg@johnson.org"        "Ein": "13-8811434"    },
+    {
+        "companyName": "Romaguera-Moore"        "Description": "Fundamental Systemic Interface"        "Tagline": "Deliver Intuitive Interfaces"        "Company Email": "lolson@stamm.biz"        "Ein": "86-8451118"    },
+    {
+        "companyName": "Wiegand, Weissnat and Frami"        "Description": "Facetoface User-Facing Orchestration"        "Tagline": "Incentivize Clicks-And-Mortar Metrics"        "Company Email": "irwin.schumm@kiehn.com"        "Ein": "21-4239665"    },
+    {
+        "companyName": "Hagenes-VonRueden"        "Description": "Profit-Focused Empowering Budgetarymanagement"        "Tagline": "Incentivize Frictionless Synergies"        "Company Email": "jaunita.aufderhar@armstrong.com"        "Ein": "13-2573157"    },
+    {
+        "companyName": "Schuster-Stamm"        "Description": "Robust Zeroadministration Superstructure"        "Tagline": "Recontextualize Best-Of-Breed E-Tailers"        "Company Email": "jpacocha@okeefe.com"        "Ein": "05-6015888"    },
+    {
+        "companyName": "Herzog-Strosin"        "Description": "Open-Architected High-Level Superstructure"        "Tagline": "Whiteboard Synergistic Channels"        "Company Email": "terry.maximus@boyle.com"        "Ein": "75-9399320"    },
+    {
+        "companyName": "Nitzsche-Greenfelder"        "Description": "Versatile Non-Volatile Benchmark"        "Tagline": "Revolutionize Bricks-And-Clicks Deliverables"        "Company Email": "wstokes@zboncak.com"        "Ein": "24-4226278"    },
+    {
+        "companyName": "Bernier Group"        "Description": "Facetoface Eco-Centric Moderator"        "Tagline": "Architect Next-Generation Deliverables"        "Company Email": "margarette.tromp@dubuque.com"        "Ein": "10-7851291"    },
+    {
+        "companyName": "Toy Inc"        "Description": "Cross-Platform Fault-Tolerant Graphicinterface"        "Tagline": "Unleash Dot-Com Supply-Chains"        "Company Email": "wiegand.dillon@johnston.org"        "Ein": "90-7413833"    },
+    {
+        "companyName": "Reichel, Kohler and Friesen"        "Description": "Multi-Channelled Multi-Tasking Intranet"        "Tagline": "Mesh One-To-One Eyeballs"        "Company Email": "lessie.howell@hauck.com"        "Ein": "86-7816179"    },
+    {
+        "companyName": "Schaefer-Mayert"        "Description": "Extended Asynchronous Time-Frame"        "Tagline": "Implement Value-Added Systems"        "Company Email": "hazle.fritsch@fahey.com"        "Ein": "41-7241289"    },
+    {
+        "companyName": "Lueilwitz-Rempel"        "Description": "Multi-Channelled Logistical Workforce"        "Tagline": "Transition Open-Source Systems"        "Company Email": "dino.kassulke@leffler.net"        "Ein": "93-8124766"    },
+    {
+        "companyName": "Mayer Ltd"        "Description": "Mandatory Grid-Enabled Website"        "Tagline": "Expedite Clicks-And-Mortar Architectures"        "Company Email": "anya.kuvalis@borer.org"        "Ein": "13-2995946"    },
+    {
+        "companyName": "Hane, Marks and Becker"        "Description": "Grass-Roots Mission-Critical Internetsolution"        "Tagline": "Engage Granular Mindshare"        "Company Email": "dylan76@marks.biz"        "Ein": "47-4286945"    },
+]

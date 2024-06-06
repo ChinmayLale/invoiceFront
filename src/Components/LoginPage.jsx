@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+
 
 function LoginPage(props) {
 
-    const [userName , setUserName] = useState(null);
-    const [pass , setPass] = useState(null);
+    const [userName, setUserName] = useState(null);
+    const [pass, setPass] = useState(null);
 
-    const handleSignIn = () =>{
+    const handleSignIn = async (e) => {
+        e.preventDefault()
         console.log(`UserName - ${userName} , Password - ${pass}`);
-        localStorage.setItem('auth',JSON.stringify({userName , pass}));
-        props.handleLogin();
+        localStorage.setItem('auth', JSON.stringify({ userName, pass }));
+        try {
+            const postData = await axios.post('http://localhost:8000/login', { username: userName, password: pass });
+            const respons =await postData.data;
+            console.log(respons);
+            localStorage.setItem('token',JSON.stringify(respons));
+            props.handleLogin();
+        } catch (error) {
+            console.error("Error While Sending Login Data To Server", error.response || error);
+        }
     }
 
 
@@ -26,11 +37,11 @@ function LoginPage(props) {
                         <form className="space-y-4 md:space-y-6" action="#">
                             <div>
                                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email/UserName</label>
-                                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900       sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="" onChange={(e)=>{setUserName(e.target.value);}} />
+                                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900       sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="" onChange={(e) => { setUserName(e.target.value); }} />
                             </div>
                             <div>
                                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" onChange={(e)=>{setPass(e.target.value);}} />
+                                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" onChange={(e) => { setPass(e.target.value); }} />
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-start">

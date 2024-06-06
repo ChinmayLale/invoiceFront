@@ -7,6 +7,9 @@ import { Route , Routes } from "react-router-dom";
 import SideMenuBar from "./Components/SideMenuBar";
 import HistoryInvoices from "./Components/HistoryInvoices";
 import AddCompany from "./Components/AddCompany";
+import AddCustomUser from "./Components/AddCustomUser";
+import DraftInvoicesData from "./Components/DraftInvoicesData";
+import { useDataGridProps } from "@mui/x-data-grid/DataGrid/useDataGridProps";
 
 
 function App() {
@@ -15,13 +18,15 @@ function App() {
 
   function handleLogin () {
     if(localStorageData){
+      var userData;
       const getUserData = () => {
-        const userData = JSON.parse(localStorage.getItem("auth"));
+        userData = JSON.parse(localStorage.getItem("token"));
+        console.log(userData)
         return userData;
       };
       const data = getUserData();
       console.log(data);
-      if(data.userName===null && data.pass === null){
+      if(userData){
         setIsLogedIn(true);
       }
       else{
@@ -35,13 +40,15 @@ function App() {
     {isLogedIn ? 
       <>
         <NavBar/>
-        <div className="container flex overflow-x-hidden items-start h-full bg-slate-100 ">
+        <div className="container flex overflow-x-hidden items-start h-fit bg-slate-100 ">
             <SideMenuBar />
             <Routes>
               <Route path="/" element={<DashBoard />} />
               <Route path="/newInvoice" element={<Invoice />} />
               <Route path="/history" element={<HistoryInvoices />} />
               <Route path="/addCompany" element={<AddCompany/>} />
+              <Route path="/addCustomUser" element={<AddCustomUser/>} />
+              <Route path="/draftIncoive" element={<DraftInvoicesData/>}/>
             </Routes>
           </div>
       </>
