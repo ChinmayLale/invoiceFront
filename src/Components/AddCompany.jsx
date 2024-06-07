@@ -32,6 +32,7 @@ function AddCompany() {
         e.preventDefault();
         const data = { companyName, ownerName, email, gstNumber, contactNumber, addState, country, companiOwner: 'Chinmay' }
         const token = localStorage.getItem('token');
+        console.log(token);
                 const config = {
                     headers: {
                         Authorization: `Bearer ${JSON.parse(token).token}`
