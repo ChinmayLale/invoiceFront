@@ -9,7 +9,6 @@ import HistoryInvoices from "./Components/HistoryInvoices";
 import AddCompany from "./Components/AddCompany";
 import AddCustomUser from "./Components/AddCustomUser";
 import DraftInvoicesData from "./Components/DraftInvoicesData";
-import { useDataGridProps } from "@mui/x-data-grid/DataGrid/useDataGridProps";
 
 
 function App() {

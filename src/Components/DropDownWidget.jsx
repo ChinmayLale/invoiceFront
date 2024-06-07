@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 
 const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name , visible}) => {
   const [inputValue, setInputValue] = useState(''); // State for search input
-  const [filteredCompanies, setFilteredCompanies] = useState(companies); // State for filtered companies
+  // const [filteredCompanies, setFilteredCompanies] = useState(companies); // State for filtered companies
   const selectRef = useRef(null); // Ref for the select element
 
 
