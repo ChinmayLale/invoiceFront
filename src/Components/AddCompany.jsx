@@ -31,8 +31,14 @@ function AddCompany() {
     const handleDefalut = async (e) => {
         e.preventDefault();
         const data = { companyName, ownerName, email, gstNumber, contactNumber, addState, country, companiOwner: 'Chinmay' }
+        const token = localStorage.getItem('token');
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(token).token}`
+                    }
+                };
         try {
-            const response = await axios.post("https://invoice-generator-server.vercel.app/addcompany", data);
+            const response = await axios.post("https://invoice-generator-server.vercel.app/addcompany", data,config);
             console.log("Data sent successfully:", response.data); // Handle successful response
             console.log(response.data.result);
             if (response.data.result) {

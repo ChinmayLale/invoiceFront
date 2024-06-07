@@ -47,8 +47,14 @@ function AddCustomUser() {
     const handleDefalut = async (e) => {
         e.preventDefault();
         const data = { UserName, email, gstNumber, contactNumber, addState, country }
+        const token = localStorage.getItem('token');
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(token).token}`
+                    }
+            };
         try {
-            const response = await axios.post("https://invoice-generator-server.vercel.app/addCustomUser", data);
+            const response = await axios.post("https://invoice-generator-server.vercel.app/addCustomUser", data,config);
             console.log("Data sent successfully:", response.data); // Handle successful response
             console.log(response.data);
         } catch (error) {
