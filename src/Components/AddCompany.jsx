@@ -32,7 +32,7 @@ function AddCompany() {
         e.preventDefault();
         const data = { companyName, ownerName, email, gstNumber, contactNumber, addState, country, companiOwner: 'Chinmay' }
         try {
-            const response = await axios.post("https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/addcompany", data);
+            const response = await axios.post("https://invoice-generator-server.vercel.app/addcompany", data);
             console.log("Data sent successfully:", response.data); // Handle successful response
             console.log(response.data.result);
             if (response.data.result) {
