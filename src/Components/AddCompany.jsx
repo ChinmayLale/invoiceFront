@@ -21,7 +21,7 @@ function AddCompany() {
                     Authorization: `Bearer ${JSON.parse(token).token}`
                 }
             };
-            const response = await axios.get('http://localhost:8000/companyList', config);
+            const response = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/companyList', config);
             setCompanyList(response.data);
             console.log(response.data)
         }
@@ -32,7 +32,7 @@ function AddCompany() {
         e.preventDefault();
         const data = { companyName, ownerName, email, gstNumber, contactNumber, addState, country, companiOwner: 'Chinmay' }
         try {
-            const response = await axios.post("http://localhost:8000/addcompany", data);
+            const response = await axios.post("https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/addcompany", data);
             console.log("Data sent successfully:", response.data); // Handle successful response
             console.log(response.data.result);
             if (response.data.result) {

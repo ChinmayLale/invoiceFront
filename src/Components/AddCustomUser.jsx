@@ -19,7 +19,7 @@ function AddCustomUser() {
                     Authorization: `Bearer ${JSON.parse(token).token}`
                 }
             };
-            const response = await axios.get('http://localhost:8000/userList',config);
+            const response = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/userList',config);
             console.log(response.data);
             setUserList(response.data)
         }
@@ -48,7 +48,7 @@ function AddCustomUser() {
         e.preventDefault();
         const data = { UserName, email, gstNumber, contactNumber, addState, country }
         try {
-            const response = await axios.post("http://localhost:8000/addCustomUser", data);
+            const response = await axios.post("https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/addCustomUser", data);
             console.log("Data sent successfully:", response.data); // Handle successful response
             console.log(response.data);
         } catch (error) {
