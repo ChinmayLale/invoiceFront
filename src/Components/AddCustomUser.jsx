@@ -19,7 +19,7 @@ function AddCustomUser() {
                     Authorization: `Bearer ${JSON.parse(token).token}`
                 }
             };
-            const response = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/userList',config);
+            const response = await axios.get('https://invoice-generator-server.vercel.app/userList',config);
             console.log(response.data);
             setUserList(response.data)
         }

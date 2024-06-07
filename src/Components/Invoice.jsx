@@ -125,7 +125,7 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
-    const responce = await axios.post('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/post', invoicedata, config)
+    const responce = await axios.post('https://invoice-generator-server.vercel.app/post', invoicedata, config)
     console.log(responce.data);
   }
 
@@ -137,7 +137,7 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
-    const responce = await axios.post('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/draftInvoice', invoicedata, config)
+    const responce = await axios.post('https://invoice-generator-server.vercel.app/draftInvoice', invoicedata, config)
     console.log(responce.data)
   }
   // ==============================================Company Select Box Functions===========================================================
@@ -151,7 +151,7 @@ function Invoice() {
             Authorization: `Bearer ${JSON.parse(token).token}`
           }
         };
-        const request = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/companyList', config)
+        const request = await axios.get('https://invoice-generator-server.vercel.app/companyList', config)
         const data = await request.data
         console.log('Data From Backed Recived')
         setcompanies(() => data)
@@ -214,7 +214,7 @@ function Invoice() {
             Authorization: `Bearer ${JSON.parse(token).token}`
           }
         };
-        const request = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/companyList', config)
+        const request = await axios.get('https://invoice-generator-server.vercel.app/companyList', config)
         const data = await request.data
         console.log('Data From Backed Recived')
         setcompanies(() => data)

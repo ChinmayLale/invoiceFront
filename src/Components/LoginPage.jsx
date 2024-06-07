@@ -12,7 +12,7 @@ function LoginPage(props) {
         console.log(`UserName - ${userName} , Password - ${pass}`);
         localStorage.setItem('auth', JSON.stringify({ userName, pass }));
         try {
-            const postData = await axios.post('https://invoice-backend-3w5a5mxme-astrochinmays-projects.vercel.app/home', { username: userName, password: pass });
+            const postData = await axios.post('https://invoice-generator-server.vercel.app/login', { username: userName, password: pass });
             const respons =await postData.data;
             console.log(respons);
             localStorage.setItem('token',JSON.stringify(respons));

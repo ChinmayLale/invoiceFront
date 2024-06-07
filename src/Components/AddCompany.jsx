@@ -21,7 +21,7 @@ function AddCompany() {
                     Authorization: `Bearer ${JSON.parse(token).token}`
                 }
             };
-            const response = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/companyList', config);
+            const response = await axios.get('https://invoice-generator-server.vercel.app/companyList', config);
             setCompanyList(response.data);
             console.log(response.data)
         }

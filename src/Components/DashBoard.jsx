@@ -21,7 +21,7 @@ function DashBoard() {
             Authorization: `Bearer ${JSON.parse(token).token}`
           }
         };
-        const request = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/companyList',config)
+        const request = await axios.get('https://invoice-generator-server.vercel.app/companyList',config)
         const data = await request.data
         console.log('Data From Backed Recived')
         setcompanies(() => data)

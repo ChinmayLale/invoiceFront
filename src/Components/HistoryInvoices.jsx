@@ -17,7 +17,7 @@ function HistoryInvoices() {
                         Authorization: `Bearer ${JSON.parse(token).token}`
                     }
                 };
-                const response = await axios.get('https://invoice-backend-aszjo8zbu-astrochinmays-projects.vercel.app/tableData', config);
+                const response = await axios.get('https://invoice-generator-server.vercel.app/tableData', config);
                 const d = response.data;
                 setRowData(d);
                 console.log("Row Data Set & Data is \n\n");
