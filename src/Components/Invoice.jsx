@@ -15,7 +15,7 @@ function Invoice() {
   const [totalAmount, setTotalAmount] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null);
   const [amountWithTax , setAmountWithTax] = useState(null);
-
+  const [ clients , setClients] = useState(null);
   const [tableData, setTableData] = useState([
     {
       itemId: 1,
@@ -214,10 +214,11 @@ function Invoice() {
             Authorization: `Bearer ${JSON.parse(token).token}`
           }
         };
-        const request = await axios.get('https://invoice-generator-server.vercel.app/companyList', config)
+        const request = await axios.get('https://invoice-generator-server.vercel.app/userList', config)
         const data = await request.data
-        console.log('UserList Data From Backed Recived')
-        setcompanies(() => data)
+        console.log('UserList Data From Backed Recived');
+        console.log(data);
+        setClients(() => data)
       } catch (error) {
         console.log(error)
       }
@@ -268,7 +269,10 @@ function Invoice() {
             <p className="p-0 mb-1">
               <b>Bill to:</b>
             </p>
-            <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Name" id='UserName' value={invoicedata.UserName} name="UserName" /></p>
+            {/* <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Name" id='UserName' value={invoicedata.UserName} name="UserName" /></p> */}
+            {clients &&
+                  <DropDownWidget companies={clients} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Client Name" id='username' value={invoicedata.UserName} name="Username"
+                    visible={visible} />}
             <p className="p-0 mb-1"><textarea type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 1" id='UserAddressL1' value={invoicedata.UserAddressL1} name="UserAddressL1" />,</p>
             {/* <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 2" id='UserAddressL2' value={invoicedata.UserAddressL2} name="UserAddressL2" />,</p>
             <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="City , State , Country" id='UserCountry' value={invoicedata.UserCountry} name="UserCountry" /></p> */}
