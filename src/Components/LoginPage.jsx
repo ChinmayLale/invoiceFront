@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
+import AlertComp from './AlertComp';
 
 
-function LoginPage(props) {
+
+function LoginPage({handleLogin}) {
 
     const [userName, setUserName] = useState(null);
     const [pass, setPass] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
+
 
     const handleSignIn = async (e) => {
         e.preventDefault()
         console.log(`UserName - ${userName} , Password - ${pass}`);
-        localStorage.setItem('auth', JSON.stringify({ userName, pass }));
+        // localStorage.setItem('auth', JSON.stringify({ userName, pass }));
         try {
             const postData = await axios.post('https://invoice-generator-server.vercel.app/login', { username: userName, password: pass });
             const respons =await postData.data;
-            console.log(respons);
-            localStorage.setItem('token',JSON.stringify(respons));
-            props.handleLogin();
+            // console.log(respons);
+            if(postData.status === 200){
+                setIsOpen(true)
+                setTimeout(() => {
+                    localStorage.setItem('token',JSON.stringify(respons));
+                    handleLogin();
+                    setIsOpen(false)
+                }, 500);
+            }
+          
         } catch (error) {
             console.error("Error While Sending Login Data To Server", error.response || error);
         }
@@ -24,6 +36,8 @@ function LoginPage(props) {
 
 
     return (
+        <div>
+        <AlertComp isOpen={isOpen} msg={'Login Succesfull !'} action={'Login'} />
         <section className="bg-gray-50 dark:bg-gray-900">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
@@ -54,15 +68,16 @@ function LoginPage(props) {
                                 </div>
                                 <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                             </div>
-                            <button type="submit" className="w-full text-white bg-sky-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" onClick={handleSignIn}>Sign in</button>
+                            <button type="submit" className="w-full text-white bg-sky-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" onClick={handleSignIn} >Sign in</button>
                             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                Don't have an account yet? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+                                Don't have an account yet? <Link to="/signup" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</Link>
                             </p>
                         </form>
                     </div>
                 </div>
             </div>
         </section>
+        </div>
     );
 }
 

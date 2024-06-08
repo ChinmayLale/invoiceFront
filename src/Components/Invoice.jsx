@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useReactToPrint } from 'react-to-print';
 import DropDownWidget from "./DropDownWidget";
 import axios from 'axios';
+import DropDownUserWidget from "./DropDownUserWidget";
 
 
 
@@ -228,6 +229,12 @@ function Invoice() {
   }, []);
 
 
+  const handleUserSelect = (selectedCompany, e) => {
+    const { name, value } = e.target;
+    console.log('Selected Client:', selectedCompany);
+    setInvoiceData({ ...invoicedata, [name]: value })
+    console.log(invoicedata)
+  };
 
 
 
@@ -269,10 +276,10 @@ function Invoice() {
             <p className="p-0 mb-1">
               <b>Bill to:</b>
             </p>
-            {/* <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Name" id='UserName' value={invoicedata.UserName} name="UserName" /></p> */}
-            {clients &&
-                  <DropDownWidget companies={clients} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Client Name" id='username' value={invoicedata.UserName} name="Username"
-                    visible={visible} />}
+            <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
+                {clients && clients.length > 1 &&
+                  <DropDownUserWidget companies={clients} onSelect={handleUserSelect} className="text-left" onChange={handleInvoiceDataChange} placeholder="Client Name" id='UserName' value={invoicedata.UserName} name="UserName"
+                    visible={visible} />}</b>
             <p className="p-0 mb-1"><textarea type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 1" id='UserAddressL1' value={invoicedata.UserAddressL1} name="UserAddressL1" />,</p>
             {/* <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 2" id='UserAddressL2' value={invoicedata.UserAddressL2} name="UserAddressL2" />,</p>
             <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="City , State , Country" id='UserCountry' value={invoicedata.UserCountry} name="UserCountry" /></p> */}
