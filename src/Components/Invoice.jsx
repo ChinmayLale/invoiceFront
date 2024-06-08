@@ -203,7 +203,7 @@ function Invoice() {
     setTableData(updatedTableData);
   };
 
-  // ====================================User Select Box Functions =======================================================
+  // =============================================== User Select Box Functions =======================================================
 
   useEffect(() => {
     async function getData() {
@@ -216,7 +216,7 @@ function Invoice() {
         };
         const request = await axios.get('https://invoice-generator-server.vercel.app/companyList', config)
         const data = await request.data
-        console.log('Data From Backed Recived')
+        console.log('UserList Data From Backed Recived')
         setcompanies(() => data)
       } catch (error) {
         console.log(error)
