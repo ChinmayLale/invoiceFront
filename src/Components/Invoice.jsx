@@ -17,6 +17,7 @@ function Invoice() {
   const [totalPrice, setTotalPrice] = useState(null);
   const [amountWithTax , setAmountWithTax] = useState(null);
   const [ clients , setClients] = useState(null);
+  const [ tax , settax] = useState(null);
   const [tableData, setTableData] = useState([
     {
       itemId: 1,
@@ -408,10 +409,41 @@ function Invoice() {
                     // value={amountWithTax}
                     id={`Tax`}
                     name="Tax"         
-                    onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice)} }
+                    onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice); settax(e.target.value)} }
                     className="w-[40px]"
                   /></td>
               <td >{amountWithTax}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td ></td>
+              <td className="text-left font-bold py-2">CGST : </td>
+              <td><input
+                    type="text"
+                    placeholder="tax %"
+                    value={tax/2}
+                    id={`Tax`}
+                    name="Tax"         
+                    // onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice)} }
+                    className="w-[40px]"
+                  /></td>
+              <td ></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td ></td>
+              <td className="text-left font-bold py-2">SGST : </td>
+              <td><input
+                    type="text"
+                    placeholder="tax %"
+                    value={tax/2}
+                    id={`Tax`}
+                    name="Tax"         
+                    className="w-[40px]"
+                  /></td>
+              <td ></td>
             </tr>
           </tbody>
         </table>
