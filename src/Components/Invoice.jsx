@@ -18,6 +18,7 @@ function Invoice() {
   const [amountWithTax , setAmountWithTax] = useState(null);
   const [ clients , setClients] = useState(null);
   const [ tax , settax] = useState(null);
+  const [isHavingGST , setISHavingGst] = useState(false);
   const [tableData, setTableData] = useState([
     {
       itemId: 1,
@@ -127,6 +128,7 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
+    // https://invoice-generator-server.vercel.app
     const responce = await axios.post('https://invoice-generator-server.vercel.app/post', invoicedata, config)
     console.log(responce.data);
   }
@@ -156,6 +158,7 @@ function Invoice() {
         const request = await axios.get('https://invoice-generator-server.vercel.app/companyList', config)
         const data = await request.data
         console.log('Data From Backed Recived')
+        console.log(data);
         setcompanies(() => data)
       } catch (error) {
         console.log(error)
@@ -263,7 +266,7 @@ function Invoice() {
               <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
                 {companies &&
                   <DropDownWidget companies={companies} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Company Name" id='CompanyName' value={invoicedata.CompanyName} name="CompanyName"
-                    visible={visible} />}</b>
+                    visible={visible} gst={()=>{setISHavingGst(true)}}/>}</b>
             </div>
             <p className="p-0 mb-1"><textarea type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 1" id='CompanyAddressL1' value={invoicedata.CompanyAddressL1} name="CompanyAddressL1" />,</p>
             {/* <p className="p-0 mb-1"><input type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 2" id='CompanyAddress2' value={invoicedata.CompanyAddressL2} name="CompanyAddressL2" />,</p>
@@ -398,8 +401,8 @@ function Invoice() {
               <td></td>
               <td ></td>
             </tr>
-            <tr>
-              <td></td>
+            {isHavingGST && <><tr>
+             <td></td>
               <td></td>
               <td ></td>
               <td className="text-left font-bold py-2">Tax : </td>
@@ -444,7 +447,7 @@ function Invoice() {
                     className="w-[40px]"
                   /></td>
               <td ></td>
-            </tr>
+            </tr></>}
           </tbody>
         </table>
 

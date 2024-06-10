@@ -15,10 +15,13 @@ function DropDownUserWidget ({ companies, onSelect ,onChange ,placeholder ,id ,n
     };
 
     useEffect(()=>{
-        console.log("Data GOt for DropDOwn IS /n",companies)
+        console.log("Data GOt for DropDown IS /n",companies)
     },[])
-    const handleSelect = (event) => {
+
+    const handleSelect = (event , selectedCompany) => {
         const selectedValue = event.target.value;
+        console.log("Selected Company is : ",selectedCompany)
+        // if()
         onSelect(selectedValue, event); // Pass selected value to parent component
         setInputValue(selectedValue); // Clear search input on selection
     };

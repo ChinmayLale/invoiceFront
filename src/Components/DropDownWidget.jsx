@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name , visible}) => {
+const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name , visible , gst}) => {
   const [inputValue, setInputValue] = useState(''); // State for search input
   // const [filteredCompanies, setFilteredCompanies] = useState(companies); // State for filtered companies
   const selectRef = useRef(null); // Ref for the select element
@@ -16,6 +16,13 @@ const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name ,
 
   const handleSelect = (event) => {
     const selectedValue = event.target.value;
+    console.log("Selectd Company Value is ")
+    const selectedCompany = companies.find(company => company.companyName === selectedValue);
+    console.log(selectedCompany);
+    if(selectedCompany.gstNumber.length > 10){
+      console.log("GST FOUND")
+      gst();
+    }
     onSelect(selectedValue,event); // Pass selected value to parent component
     setInputValue(selectedValue); // Clear search input on selection
   };
