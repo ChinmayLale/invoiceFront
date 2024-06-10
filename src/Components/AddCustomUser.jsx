@@ -19,6 +19,7 @@ function AddCustomUser() {
                     Authorization: `Bearer ${JSON.parse(token).token}`
                 }
             };
+            // https://invoice-generator-server.vercel.app/
             const response = await axios.get('https://invoice-generator-server.vercel.app/userList',config);
             console.log(response.data);
             setUserList(response.data)
@@ -27,7 +28,7 @@ function AddCustomUser() {
     }, [])
 
     const columns = [
-        { field: 'name', headerName: "Client Name", width: 150 },
+        { field: 'username', headerName: "Client Name", width: 150 },
         { field: 'email', headerName: "Client Email", width: 150 },
         { field: 'phone', headerName: "Contact", width: 100 },
         {
@@ -46,7 +47,7 @@ function AddCustomUser() {
 
     const handleDefalut = async (e) => {
         e.preventDefault();
-        const data = { UserName, email, gstNumber, contactNumber, addState, country }
+        const data = { username:UserName, email, gstNumber, contactNumber, addState, country }
         const token = localStorage.getItem('token');
                 const config = {
                     headers: {
@@ -54,7 +55,7 @@ function AddCustomUser() {
                     }
             };
         try {
-            const response = await axios.post("https://invoice-generator-server.vercel.app/addCustomUser", data,config);
+            const response = await axios.post("http://localhost:8000/addCustomUser", data,config);
             console.log("Data sent successfully:", response.data); // Handle successful response
             console.log(response.data);
         } catch (error) {
@@ -71,12 +72,12 @@ function AddCustomUser() {
                         <input type="text" name="UserName" id="UserName" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required
                             onChange={(e) => setUserName(e.target.value)} value={UserName} />
 
-                        <label for="floating_email" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">User Name</label>
+                        <label for="floating_email" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Client Name</label>
                     </div>
 
                     <div class="relative z-0 w-full mb-5 group">
                         <input type="email" name="repeat_password" id="floating_repeat_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required onChange={(e) => setemail(e.target.value)} value={email} />
-                        <label for="floating_repeat_password" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">User Email</label>
+                        <label for="floating_repeat_password" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Client Email</label>
                     </div>
                     <div class="grid md:grid-cols-2 md:gap-6">
                         <div class="relative z-0 w-full mb-5 group">
@@ -104,7 +105,7 @@ function AddCustomUser() {
             </div>
 
             <div className='companyLists w-full h-[80vh] bg-white p-5 flex flex-col'>
-                <h1 className="text-3xl font-semibold text-left m-2">Previously Registered Companies</h1>
+                <h1 className="text-3xl font-semibold text-left m-2">Previously Registered Clients</h1>
                 {getUserList.length > 5 && <DataGrid
                     rows={getUserList}
                     getRowId={(row) => row._id}

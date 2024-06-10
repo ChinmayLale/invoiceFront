@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 
 
@@ -14,6 +14,9 @@ function DropDownUserWidget ({ companies, onSelect ,onChange ,placeholder ,id ,n
         setInputValue(newInputValue);
     };
 
+    useEffect(()=>{
+        console.log("Data GOt for DropDOwn IS /n",companies)
+    },[])
     const handleSelect = (event) => {
         const selectedValue = event.target.value;
         onSelect(selectedValue, event); // Pass selected value to parent component
@@ -40,6 +43,10 @@ function DropDownUserWidget ({ companies, onSelect ,onChange ,placeholder ,id ,n
                 ref={selectRef}
             >
                 {companies.filter((company) => company.username.toLowerCase().startsWith(inputValue)).map((company) => (
+                    <option key={company.id} value={company.username}>
+                        {company.username}
+                    </option>
+                )) || companies.filter((company) => company.UserName.toLowerCase().startsWith(inputValue)).map((company) => (
                     <option key={company.id} value={company.username}>
                         {company.username}
                     </option>
