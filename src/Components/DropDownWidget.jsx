@@ -41,7 +41,7 @@ const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name ,
       <select
         name="companyName"
         id=""
-        className={`relative w-[100%] text-right ${visible ? 'block':'hidden'}`}
+        className={`relative w-[100%] text-right ${visible ? 'block':'hidden'} mr-10`}
         onChange={handleSelect}
         ref={selectRef}
       >
