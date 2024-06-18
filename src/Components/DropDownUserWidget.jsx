@@ -45,11 +45,11 @@ function DropDownUserWidget ({ companies, onSelect ,onChange ,placeholder ,id ,n
                 onChange={handleSelect}
                 ref={selectRef}
             >
-                {companies.filter((company) => company.username.toLowerCase().startsWith(inputValue)).map((company) => (
+                {companies.filter((company) => company.username.toLowerCase()).map((company) => (
                     <option key={company.id} value={company.username}>
                         {company.username}
                     </option>
-                )) || companies.filter((company) => company.UserName.toLowerCase().startsWith(inputValue)).map((company) => (
+                )) || companies.filter((company) => company.UserName.toLowerCase()).map((company) => (
                     <option key={company.id} value={company.username}>
                         {company.username}
                     </option>

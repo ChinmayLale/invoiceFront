@@ -3,13 +3,14 @@ import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
 
 function AddCustomUser() {
-    const [UserName, setUserName] = useState('');
-    const [email, setemail] = useState('');
-    const [gstNumber, setgstNumber] = useState(0);
-    const [contactNumber, setcontactNumber] = useState(0)
-    const [addState, setaddState] = useState('');
-    const [country, setcountry] = useState('')
-    const [getUserList, setUserList] = useState([])
+    const [UserName, setUserName] = useState(null);
+    const [email, setemail] = useState(null);
+    const [gstNumber, setgstNumber] = useState(null);
+    const [contactNumber, setcontactNumber] = useState(null)
+    const [addState, setaddState] = useState(null);
+    const [country, setcountry] = useState(null)
+    const [getUserList, setUserList] = useState([]);
+    const [ filteredUsers , setFilteredUsers]=useState(null);
 
     useEffect(() => {
         async function getUserList() {
@@ -21,7 +22,10 @@ function AddCustomUser() {
             };
             // https://invoice-generator-server.vercel.app/
             const response = await axios.get('https://invoice-generator-server.vercel.app/userList',config);
-            console.log(response.data);
+            const d = response.data
+            const getUser = JSON.parse(localStorage.getItem('cred'))
+            const filteredCompanyList = d.filter((obj) => obj.registeredBy === getUser.userName) ;
+            setFilteredUsers(filteredCompanyList);
             setUserList(response.data)
         }
         getUserList();
@@ -30,38 +34,86 @@ function AddCustomUser() {
     const columns = [
         { field: 'username', headerName: "Client Name", width: 150 },
         { field: 'email', headerName: "Client Email", width: 150 },
-        { field: 'phone', headerName: "Contact", width: 100 },
+        { field: 'contactNumber', headerName: "Contact", width: 100 },
         {
-            field: 'Current Status',
+            field: 'Action',
             headerName: 'Action',
             width: 80,
             renderCell: (params) => {
-                return (
-                    <>
-                        <button className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl'>Delete</button>
-                    </>
-                )
-            }
-        }
+              const handleDelete = async () => {
+                const userId = params.row._id; // Get user ID from the row object
+                const token = localStorage.getItem('token');
+                const config = {
+                  headers: {
+                    Authorization: `Bearer ${JSON.parse(token).token}`,
+                  },
+                };
+                try {
+                  const response = await axios.delete(
+                    `https://invoice-generator-server.vercel.app/deleteUser/${userId}`,
+                    config
+                  );
+                  if (response.status === 200) {
+                    const updatedUserList = getUserList.filter(
+                      (user) => user._id !== userId
+                    );
+                    setUserList(updatedUserList);
+                    setFilteredUsers(updatedUserList.filter((obj) => obj.registeredBy === JSON.parse(localStorage.getItem('cred')).userName));
+                    alert('Client Deleted Successfully!');
+                  } else {
+                    alert('Error Deleting Client!');
+                  }
+                } catch (error) {
+                  console.error('Error deleting user:', error);
+                  alert('Error Deleting Client!');
+                }
+              };
+      
+              return (
+                <>
+                  <button className="relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl" onClick={handleDelete}>
+                    Delete
+                  </button>
+                </>
+              );
+            },
+          },
     ];
+  
 
     const handleDefalut = async (e) => {
         e.preventDefault();
-        const data = { username:UserName, email, gstNumber, contactNumber, addState, country }
+        const user = JSON.parse(localStorage.getItem('cred'));
+        console.log(user)
+        const temp = user.userName;
+        console.log(temp)
+        const data = { username:UserName, email, gstNumber, contactNumber, addState, country , registeredBy:temp }
+        console.log(data)
         const token = localStorage.getItem('token');
-                const config = {
-                    headers: {
-                        Authorization: `Bearer ${JSON.parse(token).token}`
-                    }
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(token).token}`
+                }
             };
         try {
-            const response = await axios.post("http://localhost:8000/addCustomUser", data,config);
-            console.log("Data sent successfully:", response.data); // Handle successful response
-            console.log(response.data);
+            const response = await axios.post("https://invoice-generator-server.vercel.app/addCustomUser", data,config);
+            console.log("Client sent successfully:"); // Handle successful response
+            console.log(response);
+            if(response.status===200){
+                alert("Client Added")
+            }
+            else if(response.status === 404){
+                alert("Client Already Exist");
+            }
         } catch (error) {
             console.error("Error sending data:", error); // Handle errors
+            alert('Somthing went wrong Try again')
         }
     }
+
+    // const getUser = JSON.parse( localStorage.getItem('cred'));
+    // console.log(getUser.userName);
+    // const filteredCompanyList =getUserList ? getUserList.filter((obj) => obj.username === getUser.userName) :[''];
 
     return (
         <div className='relative flex-[4]  h-[90vh] w-full flex flex-col bg-white'>
@@ -107,7 +159,7 @@ function AddCustomUser() {
             <div className='companyLists w-full h-[80vh] bg-white p-5 flex flex-col'>
                 <h1 className="text-3xl font-semibold text-left m-2">Previously Registered Clients</h1>
                 {getUserList.length > 5 && <DataGrid
-                    rows={getUserList}
+                    rows={filteredUsers}
                     getRowId={(row) => row._id}
                     columns={columns}
                     initialState={{

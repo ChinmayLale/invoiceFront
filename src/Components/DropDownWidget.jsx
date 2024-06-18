@@ -41,11 +41,11 @@ const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name ,
       <select
         name="companyName"
         id=""
-        className={`relative w-[100%] text-right ${visible ? 'block':'hidden'} mr-10`}
+        className={`relative w-[100%] text-right ${visible ? 'block':'hidden'} `}
         onChange={handleSelect}
         ref={selectRef}
       >
-        {companies.filter((company)=>company.companyName.toLowerCase().startsWith(inputValue)).map((company) => (
+        {companies.filter((company)=>company.companyName.toLowerCase()).map((company) => (
           <option key={company._id} value={company.companyName}>
             {company.companyName}
           </option>

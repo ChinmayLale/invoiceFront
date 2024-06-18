@@ -7,6 +7,7 @@ import DropDownUserWidget from "./DropDownUserWidget";
 
 
 function Invoice() {
+  const [getCopiedData, setCopiedData] = useState(null)
   const [companies, setcompanies] = useState(null)
   const [userIMG, setUserIMG] = useState(null);
   const [invoiceID, setInvoiceID] = useState('');
@@ -15,15 +16,16 @@ function Invoice() {
   const [totalQuant, setTotalQuant] = useState(0);
   const [totalAmount, setTotalAmount] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null);
-  const [amountWithTax , setAmountWithTax] = useState(null);
-  const [ clients , setClients] = useState(null);
-  const [ tax , settax] = useState(null);
-  const [isHavingGST , setISHavingGst] = useState(false);
+  const [amountWithTax, setAmountWithTax] = useState(null);
+  const [clients, setClients] = useState(null);
+  const [tax, settax] = useState(null);
+  const [isHavingGST, setISHavingGst] = useState(false);
+  const [taxOnAmount, setTaxOnAmount] = useState(null);
   const [tableData, setTableData] = useState([
     {
       itemId: 1,
       itemName: '',
-      itemDesc:'',
+      itemDesc: '',
       itemAmount: '',
       itemQuant: '',
       itemCost: ''
@@ -36,8 +38,8 @@ function Invoice() {
       CompanyName: '',
       OwnerName: '',
       CompanyAddressL1: '',
-      UserName: '',
-      UserAddressL1: '',
+      UserName: '' || getCopiedData ? getCopiedData.UserName : '',
+      UserAddressL1: '' || getCopiedData ? getCopiedData.UserAddressL1 : '',
       // UserAddressL2: '',
       UserContact: '',
       // UserCountry: '',
@@ -57,6 +59,17 @@ function Invoice() {
     removeAfterPrint: true,
   });
 
+  //============================================ Get Copied Invoice Data =================================================================
+  useEffect(() => {
+    const copiedData = JSON.parse(localStorage.getItem('copiedInvoice'))
+    if (copiedData) {
+      // console.log(copiedData);
+      setCopiedData(copiedData[0]);
+      localStorage.removeItem('copiedInvoice')
+      console.log("Copied Data Found !")
+      console.log(copiedData[0])
+    }
+  }, [])
 
   // ======================================= Generate Invoice ID Here =====================================================================
 
@@ -77,7 +90,7 @@ function Invoice() {
         index === rowIndex ? { ...row, [name]: value } : row
       )
     );
-    setInvoiceData({ ...invoicedata, tableData: tableData , TotalBillAmount:totalPrice , TotalQuantity : totalQuant , taxableAmount:amountWithTax});
+    setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax });
     console.log(name + " : " + value);
     console.log(currentCost);
   };
@@ -109,6 +122,8 @@ function Invoice() {
     reader.readAsDataURL(file);
   };
 
+
+  // ====================================================================================================================================
   const handleInvoiceDataChange = (event) => {
     const { name, value } = event.target;
     setInvoiceData({ ...invoicedata, [name]: value });
@@ -144,12 +159,14 @@ function Invoice() {
     const responce = await axios.post('https://invoice-generator-server.vercel.app/draftInvoice', invoicedata, config)
     console.log(responce.data)
   }
-// ============================================== Company Select Box Functions===========================================================
+  // ============================================== Company Select Box Functions    ==============================================
 
   useEffect(() => {
     async function getData() {
       try {
         const token = localStorage.getItem('token');
+        const admin = JSON.parse(localStorage.getItem('cred'));
+        console.log("User Who Logged In Is : ", admin.userName)
         const config = {
           headers: {
             Authorization: `Bearer ${JSON.parse(token).token}`
@@ -157,9 +174,10 @@ function Invoice() {
         };
         const request = await axios.get('https://invoice-generator-server.vercel.app/companyList', config)
         const data = await request.data
-        console.log('Data From Backed Recived')
-        console.log(data);
-        setcompanies(() => data)
+        console.log('Company List Data From Backed Recived')
+        const filteredData = data.filter(obj => obj.username === admin.userName);
+        console.log(filteredData);
+        setcompanies(filteredData);
       } catch (error) {
         console.log(error)
       }
@@ -214,6 +232,8 @@ function Invoice() {
     async function getData() {
       try {
         const token = localStorage.getItem('token');
+        const admin = JSON.parse(localStorage.getItem('cred'));
+        console.log("User Who Logged In Is : ", admin.userName)
         const config = {
           headers: {
             Authorization: `Bearer ${JSON.parse(token).token}`
@@ -221,15 +241,17 @@ function Invoice() {
         };
         const request = await axios.get('https://invoice-generator-server.vercel.app/userList', config)
         const data = await request.data
-        console.log('UserList Data From Backed Recived');
-        console.log(data);
-        setClients(() => data)
+        console.log('UserList Data From Backed Recived - ', admin.userName);
+        const filteredData = data.filter((obj) => obj.registeredBy === admin.userName);
+        console.log(filteredData);
+        setClients(filteredData);
+
       } catch (error) {
         console.log(error)
       }
     }
     getData();
-    companies ? console.log(companies) : console.log("No data")
+    companies ? console.log("User Data Recived") : console.log("No data")
   }, []);
 
 
@@ -266,7 +288,7 @@ function Invoice() {
               <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
                 {companies &&
                   <DropDownWidget companies={companies} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Company Name" id='CompanyName' value={invoicedata.CompanyName} name="CompanyName"
-                    visible={visible} gst={()=>{setISHavingGst(true)}}/>}</b>
+                    visible={visible} gst={() => { setISHavingGst(true) }} />}</b>
             </div>
             <p className="p-0 mb-1"><textarea type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 1" id='CompanyAddressL1' value={invoicedata.CompanyAddressL1} name="CompanyAddressL1" />,</p>
             {/* <p className="p-0 mb-1"><input type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 2" id='CompanyAddress2' value={invoicedata.CompanyAddressL2} name="CompanyAddressL2" />,</p>
@@ -281,9 +303,9 @@ function Invoice() {
               <b>Bill to:</b>
             </p>
             <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
-                {clients && clients.length > 1 &&
-                  <DropDownUserWidget companies={clients} onSelect={handleUserSelect} className="text-left" onChange={handleInvoiceDataChange} placeholder="Client Name" id='UserName' value={invoicedata.UserName} name="UserName"
-                    visible={visible} />}</b>
+              {clients && clients.length > 1 &&
+                <DropDownUserWidget companies={clients} onSelect={handleUserSelect} className="text-left" onChange={handleInvoiceDataChange} placeholder="Client Name" id='UserName' value={invoicedata.UserName} name="UserName"
+                  visible={visible} />}</b>
             <p className="p-0 mb-1"><textarea type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 1" id='UserAddressL1' value={invoicedata.UserAddressL1} name="UserAddressL1" />,</p>
             {/* <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 2" id='UserAddressL2' value={invoicedata.UserAddressL2} name="UserAddressL2" />,</p>
             <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="City , State , Country" id='UserCountry' value={invoicedata.UserCountry} name="UserCountry" /></p> */}
@@ -305,12 +327,12 @@ function Invoice() {
               <th className="text-left font-bold py-2">Unit Price</th>
               <th className="text-left font-bold py-2">Quantity</th>
               <th className="text-left font-bold py-2">Amount</th>
-              <th className={`text-left font-bold py-2 ${visible ? 'block':'hidden'}`}>Action</th>
+              <th className={`text-left font-bold py-2 ${visible ? 'block' : 'hidden'}`}>Action</th>
             </tr>
           </thead>
           <tbody>
             {tableData.map((row, rowIndex) => (
-              <tr key={row.itemId} className="border-b border-gray-300">
+              <tr key={row.itemId} className="border-b border-gray-300 h-full">
                 <td className="py-2">
                   <input
                     type="text"
@@ -328,19 +350,24 @@ function Invoice() {
                     value={row.itemName}
                     name="itemName" //Name
                     id={`itemName-${rowIndex}`} // Unique ID
-                    onChange={(e) => handleInputChange(e, rowIndex)}
-                    className="w-[180px]"
+                    onChange={(e) => { handleInputChange(e, rowIndex) }}
+                    className="w-[150px]"
                   />
                 </td>
-                <td className="py-2">
-                  <input
+                <td className="py-2 h-fit resize-none overflow-hidden">
+                  <textarea
                     type="text"
                     placeholder="Item Desc"
                     value={row.itemDesc}
                     name="itemDesc" //Name
                     id={`itemDesc-${rowIndex}`} // Unique ID
                     onChange={(e) => handleInputChange(e, rowIndex)}
-                    className="w-[220px]"
+                    className="w-[275px]"
+                    style={{ height: 'auto', minHeight: '50px' }} // Adjust minHeight as necessary
+                    onInput={(e) => {
+                      e.target.style.height = 'auto';
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
                   />
                 </td>
                 <td className="py-2">
@@ -361,7 +388,7 @@ function Invoice() {
                     value={row.itemQuant}
                     id={`itemQuant-${row.itemId}`}
                     name="itemQuant"                //Quantity
-                    onChange={(e) => handleInputChange(e, rowIndex)}
+                    onChange={(e) => { const val = parseFloat(e.target.value); if (val < 0) { e.target.value = Math.abs(val); } handleInputChange(e, rowIndex) }}
                     className="w-[50px]"
                   />
                 </td>
@@ -377,21 +404,21 @@ function Invoice() {
                   /></td>
                 <td className="py-2">
                   <i
-                    className={`ri-delete-bin-6-line text-xl cursor-pointer text-black ${visible ? 'block':'hidden'}`}
+                    className={`ri-delete-bin-6-line text-xl cursor-pointer text-black ${visible ? 'block' : 'hidden'}`}
                     onClick={() => handleDeleteRow(rowIndex)}
                   ></i>
                 </td>
               </tr>
-             
+
 
             ))}
             <tr>
               <td></td>
               <td></td>
               <td className="text-left font-bold py-2">Total </td>
-              <td >{totalAmount}</td>
+              <td >₹ {totalAmount}</td>
               <td>{totalQuant}</td>
-              <td >{totalPrice}</td>
+              <td >₹ {totalPrice}</td>
             </tr>
             <tr>
               <td></td>
@@ -402,52 +429,69 @@ function Invoice() {
               <td ></td>
             </tr>
             {isHavingGST && <><tr>
-             <td></td>
+              <td></td>
               <td></td>
               <td ></td>
               <td className="text-left font-bold py-2">Tax : </td>
               <td><input
-                    type="text"
-                    placeholder="tax %"
-                    // value={amountWithTax}
-                    id={`Tax`}
-                    name="Tax"         
-                    onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice); settax(e.target.value)} }
-                    className="w-[40px]"
-                  /></td>
-              <td >{amountWithTax}</td>
+                type="text"
+                placeholder="tax %"
+                // value={amountWithTax}
+                id={`Tax`}
+                name="Tax"
+                onChange={(e) => { setAmountWithTax(((e.target.value * totalPrice) / 100) + totalPrice); settax(e.target.value); setTaxOnAmount(((e.target.value * totalPrice) / 100) + totalPrice) }}
+                className="w-[40px]"
+              /></td>
+              <td >₹ {amountWithTax}</td>
             </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td ></td>
-              <td className="text-left font-bold py-2">CGST : </td>
-              <td><input
-                    type="text"
-                    placeholder="tax %"
-                    value={tax/2}
-                    id={`Tax`}
-                    name="Tax"         
-                    // onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice)} }
-                    className="w-[40px]"
-                  /></td>
-              <td ></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td ></td>
-              <td className="text-left font-bold py-2">SGST : </td>
-              <td><input
-                    type="text"
-                    placeholder="tax %"
-                    value={tax/2}
-                    id={`Tax`}
-                    name="Tax"         
-                    className="w-[40px]"
-                  /></td>
-              <td ></td>
-            </tr></>}
+              <tr>
+                <td></td>
+                <td></td>
+                <td ></td>
+                <td className="text-left font-bold py-2"> Tax Amount : </td>
+                <td><input
+                  type="text"
+                  placeholder="tax %"
+                  value={`₹ ${totalAmount * tax / 100}`}
+                  id={`TaxAmount`}
+                  name="Tax"
+                  // onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice)} }
+                  className="w-[40px]"
+                  readOnly
+                /></td>
+                <td ></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td ></td>
+                <td className="text-left font-bold py-2">CGST : </td>
+                <td><input
+                  type="text"
+                  placeholder="tax %"
+                  value={tax / 2}
+                  id={`Tax`}
+                  name="Tax"
+                  // onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice)} }
+                  className="w-[40px]"
+                /></td>
+                <td ></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td ></td>
+                <td className="text-left font-bold py-2">SGST : </td>
+                <td><input
+                  type="text"
+                  placeholder="tax %"
+                  value={tax / 2}
+                  id={`Tax`}
+                  name="Tax"
+                  className="w-[40px]"
+                /></td>
+                <td ></td>
+              </tr></>}
           </tbody>
         </table>
 
@@ -463,7 +507,7 @@ function Invoice() {
         </div>
 
         <div className="h-px bg-gray-300 my-4" />
-        <div className="text-gray-400 text-sm">Invoice #1234</div>
+        <div className="text-gray-400 text-sm">Invoice #{invoiceID}</div>
       </div>
 
       <button className="absolute bottom-[1vh] left-[10vw] w-fit h-fit p-4 bg-green-200 font-bold text-green-900 rounded-lg z-30"

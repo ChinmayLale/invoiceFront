@@ -12,6 +12,8 @@ function AddCompany() {
     const [addState, setaddState] = useState('');
     const [country, setcountry] = useState('')
     const [companyList, setCompanyList] = useState([''])
+    const [getUser, setUser] = useState('');
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         async function getCompanyList() {
@@ -26,60 +28,83 @@ function AddCompany() {
             console.log(response.data)
         }
         getCompanyList();
+    }, [refresh])
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('cred'));
+        setUser(user.userName);
     }, [])
 
     const handleDefalut = async (e) => {
-        e.preventDefault();
-        const data = { companyName, ownerName, email, gstNumber, contactNumber, addState, country, companiOwner: 'Chinmay' }
+        // e.preventDefault();
+        const data = { companyName, ownerName, email, gstNumber, contactNumber, addState, country, username: getUser }
+        if (companyName === '' || ownerName === '' || email === '' || gstNumber === '' || contactNumber === '' || addState === '' || country === '' || !email.includes('@')) {
+            alert('please fill all the fields with proper data');
+            return;
+        }
+        // console.log(data)
         const token = localStorage.getItem('token');
-        console.log(token);
-                const config = {
-                    headers: {
-                        Authorization: `Bearer ${JSON.parse(token).token}`
-                    }
-                };
+        // console.log(token);
+        const config = {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(token).token}`
+            }
+        };
         try {
-            const response = await axios.post("https://invoice-generator-server.vercel.app/addcompany", data,config);
-            console.log("Data sent successfully:", response.data); // Handle successful response
-            console.log(response.data.result);
+            const response = await axios.post("https://invoice-generator-server.vercel.app/addcompany", data, config);
+            console.log("Data sent successfully:"); // Handle successful response
+            // console.log(response.data.result);
             if (response.data.result) {
-                alert("Company Added")
+                alert("Company Added");
+                setRefresh(!refresh);
             }
             else {
                 alert("Duplicate Entry Found")
             }
         } catch (error) {
-            console.error("Error sending data:", error); // Handle errors
+            console.error("Error sending data:", error); // Handle 
         }
     }
+
+    const handleRowClick = (params) => {
+        const clickedRow = params.row;
+        console.log('Clicked on row details:');
+        setcompanyName(clickedRow.companyName);
+        setownerName(clickedRow.ownerName);
+        setemail(clickedRow.email)
+        setgstNumber(clickedRow.gstNumber);
+        setaddState(clickedRow.addState);
+        setcountry(clickedRow.country)
+      };
 
 
     const columns = [
         { field: 'companyName', headerName: "Company Name", width: 150 },
-        { field: 'CompanyOwner', headerName: "Owner", width: 150 },
+        { field: 'ownerName', headerName: "Owner", width: 150 },
         { field: 'email', headerName: "Contact", width: 100 },
         {
             field: 'Current Status',
             headerName: 'Action',
-            width: 80,
+            width: 120,
             renderCell: (params) => {
                 return (
-                    <>
-                        <button className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl'>Delete</button>
-                    </>
+                    <div className='relative flex flex-row items-center justify-center gap-4'>
+                        <button className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl text-sm'>Delete</button>
+                        <button className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-green-300 text-green-900 h-[80%] rounded-xl text-sm' >Edit</button>
+                    </div>
                 )
             }
         }
     ];
 
-
-
+    const filteredCompanyList = companyList ? companyList.filter(company => company.username === getUser) : [''];
+    
 
     return (
-        <div className='relative flex-[4]  h-fit w-[100%] flex flex-col overflow-x-hidden'>
+        <div className='relative flex-[4]  h-fit w-[100%] flex flex-col overflow-x-hidden bg-white'>
             <h1 className="text-3xl font-semibold text-center m-2">Add Company info here For Faster generation of invoices</h1>
             <div className="getonfo mt-5  w-[60%]">
-                <form className="max-w-[80%] mx-auto">
+                <form className="max-w-[80%] mx-auto" onSubmit={handleDefalut}>
                     <div className="relative z-0 w-full mb-5 group">
                         <input type="text" name="CompanyName" id="CompanyName" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required
                             onChange={(e) => setcompanyName(e.target.value)} value={companyName} />
@@ -120,12 +145,13 @@ function AddCompany() {
 
             </div>
 
-            <div className='companyLists w-full h-[80vh] bg-slate-100 p-5 flex flex-col'>
+            <div className='companyLists w-[80%] h-[80vh] bg-white p-5 flex flex-col'>
                 <h1 className="text-3xl font-semibold text-left m-2">Previously Registered Companies</h1>
-                {companyList.length > 5 && <DataGrid
-                    rows={companyList}
+                {filteredCompanyList && <DataGrid
+                    rows={filteredCompanyList}
                     getRowId={(row) => row._id}
                     columns={columns}
+                    onRowClick={handleRowClick}
                     initialState={{
                         pagination: {
                             paginationModel: { page: 0, pageSize: 6 },

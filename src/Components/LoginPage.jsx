@@ -15,10 +15,10 @@ function LoginPage({handleLogin}) {
     const handleSignIn = async (e) => {
         e.preventDefault()
         console.log(`UserName - ${userName} , Password - ${pass}`);
-        // localStorage.setItem('auth', JSON.stringify({ userName, pass }));
+        localStorage.setItem('cred', JSON.stringify({ userName }));
         try {
             // https://invoice-generator-server.vercel.app/
-            const postData = await axios.post('https://invoice-generator-server.vercel.app/login', { username: userName, password: pass });
+            const postData = await axios.post('https://invoice-generator-server.vercel.app/login', { username: userName, password: pass});
             const respons =await postData.data;
             // console.log(respons);
             if(postData.status === 200){
@@ -29,9 +29,14 @@ function LoginPage({handleLogin}) {
                     setIsOpen(false)
                 }, 500);
             }
+            else if(postData.status === 400){
+                alert("Wrong Credentials")
+            }
           
         } catch (error) {
             console.error("Error While Sending Login Data To Server", error.response || error);
+            alert("Wrong Credentials")
+            
         }
     }
 

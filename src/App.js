@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import LoginPage from "./Components/LoginPage";
 import Invoice from "./Components/Invoice";
@@ -15,6 +15,13 @@ function App() {
   const [isLogedIn, setIsLogedIn] = useState(false);
   // const localStorageData = localStorage.getItem('auth');
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLogedIn(true);
+    }
+  }, []);
+
   function handleLogin() {
     const userData = JSON.parse(localStorage.getItem("token"));
     if (userData) {
@@ -23,13 +30,18 @@ function App() {
       alert('Wrong Credentials');
     }
   }
+
+  function handleLOgOut(){
+    localStorage.removeItem('token');
+    setIsLogedIn(false);
+  }
   
 
   return (
     <>
       {isLogedIn ? (
         <>
-          <NavBar />
+          <NavBar handleLOgOut = {handleLOgOut}/>
           <div className="container flex overflow-x-hidden items-start h-fit bg-slate-100">
             <SideMenuBar />
             <Routes>

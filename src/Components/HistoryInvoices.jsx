@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-
+import {useNavigate} from 'react-router-dom';
 
 function HistoryInvoices() {
 
     const [rowData, setRowData] = useState(null);
     const [tableData, setTableData] = useState(null);
-
+    const navi = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -37,6 +37,14 @@ function HistoryInvoices() {
         return () => clearInterval(intervalId);
     }, []);
 
+    const copyInvoice = (params) => {
+        const clickedRow = params.row;
+        console.log('Clicked on row details:');
+        const copyData = rowData.filter((obj)=>obj.UserName === clickedRow.UserName);
+        console.log(copyData[0])
+        localStorage.setItem("copiedInvoice",JSON.stringify(copyData))
+        navi('/newInvoice')
+    }
 
     useEffect(() => {
         var data = null
@@ -65,12 +73,12 @@ function HistoryInvoices() {
         { field: 'UserContact', headerName: 'UserContact', width: 100 },
         {
             field: 'Current Status',
-            headerName: 'Status',
+            headerName: 'Action',
             width: 60,
             renderCell: (params) => {
                 return (
                     <>
-                        <button className='bg bg-green-300 m-1 h-[80%] text-center w-[100%] pb-2 rounded-lg'>Paid</button>
+                        <button className='bg flex flex-row items-center justify-center bg-green-300 m-1 h-[60%] text-center w-[100%] p-2 rounded-lg font-semibold' onClick={copyInvoice}>Copy</button>
                     </>
                 )
             }
@@ -97,6 +105,7 @@ function HistoryInvoices() {
                             },
                         }}
                         pageSizeOptions={[5, 8, 10]}
+                        onRowClick={copyInvoice}
                         checkboxSelection
                         autosizeOnMount
                     />}
