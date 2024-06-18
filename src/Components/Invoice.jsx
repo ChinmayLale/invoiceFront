@@ -46,16 +46,10 @@ function Invoice() {
       // UserCountry: '',
       Date: Date(),
       InvoiceDesc: '',
-      Conditions: '',
-      generatedBy
+      Conditions: ''
     }
   ])
 
-  useEffect(()=>{
-    const temp = JSON.parse(localStorage.getItem('cred'))
-    console.log(temp);
-    setGeneratedBy(temp.userName);
-  },[])
 
   
   // ================================================== Handle Print function ===============================================================
@@ -99,7 +93,7 @@ function Invoice() {
         index === rowIndex ? { ...row, [name]: value } : row
       )
     );
-    setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax });
+    setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax});
     console.log(name + " : " + value);
     console.log(currentCost);
   };
@@ -143,6 +137,12 @@ function Invoice() {
 
   // ========================================================hideComponents================================================================
 
+  const addGeneratedBy = async()=>{
+    const temp = await JSON.parse(localStorage.getItem('cred')).userName
+    console.log("============================================",temp);
+    setGeneratedBy(temp);
+    setInvoiceData((prevData) => ({ ...prevData, generatedBy: temp}));
+  }
   const hideButton = async () => {
     const btn = document.getElementById('addItem');
     btn.style.display = 'none';
@@ -152,9 +152,17 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
+    await addGeneratedBy();
+    console.log("------------------------------------------------------------------------------------------------------");
     // https://invoice-generator-server.vercel.app
-    const responce = await axios.post('https://invoice-generator-server.vercel.app/post', invoicedata, config)
-    console.log(responce.data);
+    setTimeout(async()=>{
+      const responce = await axios.post('https://invoice-generator-server.vercel.app/post', invoicedata, config);
+      console.log(invoicedata);
+      console.log(responce.data);
+    },1000)
+    setTimeout(()=>{
+      btn.style.display = 'block';
+    },2000)
   }
 
   // ================================================== Save Draft Invoice ==================================================================
@@ -165,6 +173,7 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
+    setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy }));
     const responce = await axios.post('https://invoice-generator-server.vercel.app/draftInvoice', invoicedata, config)
     console.log(responce.data);
     if(responce.status===200){
@@ -190,6 +199,7 @@ function Invoice() {
         const filteredData = data.filter(obj => obj.username === admin.userName);
         console.log(filteredData);
         setcompanies(filteredData);
+        
       } catch (error) {
         console.log(error)
       }
@@ -299,7 +309,7 @@ function Invoice() {
             <div className="p-0 mb-1 w-fit">
               <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
                 {companies &&
-                  <DropDownWidget companies={companies} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Company Name" id='CompanyName' value={invoicedata.CompanyName} name="CompanyName"
+                  <DropDownWidget companies={companies} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Company Name" id='CompanyName' value={invoicedata.CompanyName} name="CompanyName" 
                     visible={visible} gst={() => { setISHavingGst(true) }} />}</b>
             </div>
             <p className="p-0 mb-1"><textarea type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 1" id='CompanyAddressL1' value={invoicedata.CompanyAddressL1} name="CompanyAddressL1" />,</p>

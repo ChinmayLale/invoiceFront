@@ -35,7 +35,7 @@ function DropDownUserWidget ({ companies, onSelect ,onChange ,placeholder ,id ,n
                 className="relative w-[100%] text-left"
                 name={name}
                 value={inputValue}
-                onChange={onchange}
+                onChange={onChange}
                 onInput={handleInputChange}
             />
             <select

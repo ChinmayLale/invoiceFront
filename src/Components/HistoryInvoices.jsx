@@ -24,9 +24,10 @@ function HistoryInvoices() {
                 };
                 const response = await axios.get('https://invoice-generator-server.vercel.app/tableData', config);
                 const d = response.data;
+                // const filterHistory = d.filter((obj)=>obj.generatedBy===generatedBy);
                 setRowData(d);
                 console.log("Row Data Set & Data is \n\n");
-                console.log(response);
+                console.log(d);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -53,14 +54,16 @@ function HistoryInvoices() {
 
     useEffect(() => {
         var data = null
-        if (rowData) {
-            data = rowData.map((obj, index) => ({
+        if (rowData && generatedBy) {
+            const filteredData = rowData.filter(obj => obj.generatedBy === generatedBy);
+            console.log("----------------------------------------------------------")
+            console.log(filteredData)
+            data = filteredData.map((obj, index) => ({
                 id: index + 1,
                 UserName: obj.UserName,
                 invoiceID: obj.invoiceID ? obj.invoiceID : '455',
                 UserContact: obj.UserContact ? obj.UserContact : '999999999',
-                Status: obj.status ? obj.status : 'Paid',
-                generatedBy 
+                Status: obj.status ? obj.status : '404'
             }));
             setTableData(data);
             console.log("Filtered Data : ");
@@ -70,7 +73,7 @@ function HistoryInvoices() {
             console.log("Error")
         }
         console.log(tableData)
-    }, [rowData]);
+    }, [rowData,generatedBy]);
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
@@ -97,7 +100,7 @@ function HistoryInvoices() {
       },[])
 
 
-
+    
     return (
         <div className=' flex-[4] bg-slate-50 h-fit flex-col'>
             <div className="heading w-full h-[10%] pt-[1%]">
@@ -107,6 +110,7 @@ function HistoryInvoices() {
                 <div style={{ height: 600, width: '90%' }} >
                     {tableData && <DataGrid
                         rows={tableData}
+                        getRowId={(row) => row.id}
                         className='bg-slate-100 text-yellow-100'
                         columns={columns}
                         initialState={{

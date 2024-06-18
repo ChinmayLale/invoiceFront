@@ -31,11 +31,12 @@ const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name ,
     <div className="w-[70%] h-fit overflow-y-auto flex flex-col items-center justify-center bg-indigo-50">
       <input
         type="text"
+        id='company_name'
         placeholder={placeholder}
         className="relative w-[100%] text-right"
         name={name}
         value={inputValue}
-        onChange={onchange}
+        onChange={onChange}
         onInput={handleInputChange}
       />
       <select
