@@ -7,7 +7,12 @@ function HistoryInvoices() {
 
     const [rowData, setRowData] = useState(null);
     const [tableData, setTableData] = useState(null);
+    const [generatedBy , setGeneratedBy] = useState(null)
+
+
     const navi = useNavigate();
+    
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -54,7 +59,8 @@ function HistoryInvoices() {
                 UserName: obj.UserName,
                 invoiceID: obj.invoiceID ? obj.invoiceID : '455',
                 UserContact: obj.UserContact ? obj.UserContact : '999999999',
-                Status: 'Paid'
+                Status: obj.status ? obj.status : 'Paid',
+                generatedBy 
             }));
             setTableData(data);
             console.log("Filtered Data : ");
@@ -84,7 +90,11 @@ function HistoryInvoices() {
             }
         }
     ];
-
+    useEffect(()=>{
+        const temp = JSON.parse(localStorage.getItem('cred'))
+        console.log(temp);
+        setGeneratedBy(temp.userName);
+      },[])
 
 
 

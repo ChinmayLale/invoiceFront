@@ -21,6 +21,7 @@ function Invoice() {
   const [tax, settax] = useState(null);
   const [isHavingGST, setISHavingGst] = useState(false);
   const [taxOnAmount, setTaxOnAmount] = useState(null);
+  const [generatedBy , setGeneratedBy] = useState(null)
   const [tableData, setTableData] = useState([
     {
       itemId: 1,
@@ -45,10 +46,18 @@ function Invoice() {
       // UserCountry: '',
       Date: Date(),
       InvoiceDesc: '',
-      Conditions: ''
+      Conditions: '',
+      generatedBy
     }
   ])
 
+  useEffect(()=>{
+    const temp = JSON.parse(localStorage.getItem('cred'))
+    console.log(temp);
+    setGeneratedBy(temp.userName);
+  },[])
+
+  
   // ================================================== Handle Print function ===============================================================
 
   const contentToPrint = useRef(null);
@@ -157,7 +166,10 @@ function Invoice() {
       }
     };
     const responce = await axios.post('https://invoice-generator-server.vercel.app/draftInvoice', invoicedata, config)
-    console.log(responce.data)
+    console.log(responce.data);
+    if(responce.status===200){
+      alert('Draft Saved !')
+    }
   }
   // ============================================== Company Select Box Functions    ==============================================
 

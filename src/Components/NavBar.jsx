@@ -17,6 +17,7 @@ function NavBar({handleLOgOut}) {
   const handleLogOut = () =>{
     localStorage.removeItem('cred');
     localStorage.removeItem('auth');
+    
     handleLOgOut();
     navi('/')
   }

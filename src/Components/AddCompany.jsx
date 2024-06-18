@@ -30,10 +30,7 @@ function AddCompany() {
         getCompanyList();
     }, [refresh])
 
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('cred'));
-        setUser(user.userName);
-    }, [])
+ 
 
     const handleDefalut = async (e) => {
         // e.preventDefault();
