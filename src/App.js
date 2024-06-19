@@ -14,7 +14,9 @@ import SignupForm from "./Components/SignupForm";
 function App() {
   const [isLogedIn, setIsLogedIn] = useState(false);
   // const localStorageData = localStorage.getItem('auth');
-
+  useEffect(() => {
+    localStorage.clear(); // This line clears all localStorage data
+  }, []);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {

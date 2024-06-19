@@ -12,8 +12,9 @@ function Invoice() {
   const [userIMG, setUserIMG] = useState(null);
   const [invoiceID, setInvoiceID] = useState('');
   const [date, setDate] = useState('');
+  const [imageState, setImageState] = useState('');
   const [visible, setvisible] = useState(true);
-  const [totalQuant, setTotalQuant] = useState(0);
+  const [totalQuant, setTotalQuant] = useState(1);
   const [totalAmount, setTotalAmount] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null);
   const [amountWithTax, setAmountWithTax] = useState(null);
@@ -21,7 +22,7 @@ function Invoice() {
   const [tax, settax] = useState(null);
   const [isHavingGST, setISHavingGst] = useState(false);
   const [taxOnAmount, setTaxOnAmount] = useState(null);
-  const [generatedBy , setGeneratedBy] = useState(null)
+  const [generatedBy, setGeneratedBy] = useState(null)
   const [tableData, setTableData] = useState([
     {
       itemId: 1,
@@ -41,17 +42,16 @@ function Invoice() {
       CompanyAddressL1: '',
       UserName: '' || getCopiedData ? getCopiedData.UserName : '',
       UserAddressL1: '' || getCopiedData ? getCopiedData.UserAddressL1 : '',
-      // UserAddressL2: '',
       UserContact: '',
-      // UserCountry: '',
       Date: Date(),
       InvoiceDesc: '',
-      Conditions: ''
+      Conditions: '',
+      CompanyLogo:imageState
     }
   ])
 
 
-  
+
   // ================================================== Handle Print function ===============================================================
 
   const contentToPrint = useRef(null);
@@ -93,7 +93,7 @@ function Invoice() {
         index === rowIndex ? { ...row, [name]: value } : row
       )
     );
-    setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax});
+    setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax ,generatedBy: generatedBy ? generatedBy : addGeneratedBy()});
     console.log(name + " : " + value);
     console.log(currentCost);
   };
@@ -111,25 +111,42 @@ function Invoice() {
     setTableData([...tableData, newRow]);
   };
 
-  //======================================================================================================================================
+  // ======================================================================================================================================
 
   const handleLogoClick = () => {
-    const fileInput = document.getElementById("fileinp");
+    const fileInput = document.getElementById('fileinp');
     fileInput.click();
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+
+    // Error handling: Ensure a file is selected
+    if (!file) {
+      console.error('Please select a valid image file.');
+      return;
+    }
+
     const reader = new FileReader();
-    reader.onload = (e) => setUserIMG(e.target.result);
+    reader.onload = (e) => {
+      const base64Image = e.target.result;
+      console.log(base64Image)
+      setImageState(base64Image); // Update imageState with base64 data
+    };
+
+    // Validate file type (optional):
+    if (!file.type.match('image.*')) {
+      console.error('Only image files are allowed.');
+      return;
+    }
+
     reader.readAsDataURL(file);
   };
-
 
   // ====================================================================================================================================
   const handleInvoiceDataChange = (event) => {
     const { name, value } = event.target;
-    setInvoiceData({ ...invoicedata, [name]: value });
+    setInvoiceData((prevData) => ({ ...prevData, [name]: value })); 
     console.log(invoicedata);
   };
 
@@ -137,13 +154,17 @@ function Invoice() {
 
   // ========================================================hideComponents================================================================
 
-  const addGeneratedBy = async()=>{
+  const addGeneratedBy = async () => {
     const temp = await JSON.parse(localStorage.getItem('cred')).userName
-    console.log("============================================",temp);
+    console.log("============================================", temp);
     setGeneratedBy(temp);
-    setInvoiceData((prevData) => ({ ...prevData, generatedBy: temp}));
+    setInvoiceData((prevData) =>({ ...prevData, generatedBy: temp }));
+    return temp;
   }
+
+
   const hideButton = async () => {
+    await addGeneratedBy();
     const btn = document.getElementById('addItem');
     btn.style.display = 'none';
     const token = localStorage.getItem('token');
@@ -152,17 +173,17 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
-    await addGeneratedBy();
-    console.log("------------------------------------------------------------------------------------------------------");
+    setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy, CompanyLogo: imageState }));
+    console.log("---------------------------------------------------------------------------------------------------------------------");
     // https://invoice-generator-server.vercel.app
-    setTimeout(async()=>{
+    setTimeout(async () => {
       const responce = await axios.post('https://invoice-generator-server.vercel.app/post', invoicedata, config);
       console.log(invoicedata);
       console.log(responce.data);
-    },1000)
-    setTimeout(()=>{
+    }, 1000)
+    setTimeout(() => {
       btn.style.display = 'block';
-    },2000)
+    }, 2000)
   }
 
   // ================================================== Save Draft Invoice ==================================================================
@@ -176,7 +197,7 @@ function Invoice() {
     setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy }));
     const responce = await axios.post('https://invoice-generator-server.vercel.app/draftInvoice', invoicedata, config)
     console.log(responce.data);
-    if(responce.status===200){
+    if (responce.status === 200) {
       alert('Draft Saved !')
     }
   }
@@ -199,7 +220,7 @@ function Invoice() {
         const filteredData = data.filter(obj => obj.username === admin.userName);
         console.log(filteredData);
         setcompanies(filteredData);
-        
+
       } catch (error) {
         console.log(error)
       }
@@ -297,11 +318,9 @@ function Invoice() {
             <h1 className="text-2xl font-bold">Invoice #<input type="number" className="text-left" onChange={handleInvoiceDataChange} placeholder={invoiceID} id='invoiceID' value={invoicedata.invoiceID} name="invoiceID" /></h1>
             <p className="text-xs">{date}</p>
           </div>
-          <div onClick={handleLogoClick}>
-            {userIMG && <img src={userIMG} alt="" className="relative bg-cover w-[100px] h-[100px]" />}
-            {!userIMG && <><input type="file" className="relative hidden" onInput={(e) => { handleFileChange(e) }} id='fileinp' />
-              Company Logo </>}
-          </div>
+          <button onClick={handleLogoClick}>Upload Logo</button>
+          <input type="file" id="fileinp" accept="image/*" onChange={handleFileChange} hidden />
+          {imageState && <img src={imageState} alt="Uploaded Logo" className="relative bg-cover w-[100px] h-[100px]" />}
         </div>
 
         <div className="infodiv flex flex-row-reverse items-center justify-between">
@@ -309,7 +328,7 @@ function Invoice() {
             <div className="p-0 mb-1 w-fit">
               <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
                 {companies &&
-                  <DropDownWidget companies={companies} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Company Name" id='CompanyName' value={invoicedata.CompanyName} name="CompanyName" 
+                  <DropDownWidget companies={companies} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Company Name" id='CompanyName' value={invoicedata.CompanyName} name="CompanyName"
                     visible={visible} gst={() => { setISHavingGst(true) }} />}</b>
             </div>
             <p className="p-0 mb-1"><textarea type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 1" id='CompanyAddressL1' value={invoicedata.CompanyAddressL1} name="CompanyAddressL1" />,</p>
@@ -399,7 +418,7 @@ function Invoice() {
                     value={row.itemAmount}
                     name="itemAmount" //Amount
                     id={`itemAmount-${row.itemId}`}
-                    onChange={(e) => handleInputChange(e, rowIndex)}
+                    onChange={(e) => { const val = parseFloat(e.target.value); if (val < 0) { e.target.value = Math.abs(val); } handleInputChange(e, rowIndex) }}
                     className="w-[50px]"
                   />
                 </td>

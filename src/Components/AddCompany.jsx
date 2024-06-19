@@ -94,7 +94,7 @@ function AddCompany() {
         }
     ];
 
-    const filteredCompanyList = companyList ? companyList.filter(company => company.username === getUser) : [''];
+    const filteredCompanyList = companyList ? companyList.filter(company => company.username === getUser) : [];
     
 
     return (

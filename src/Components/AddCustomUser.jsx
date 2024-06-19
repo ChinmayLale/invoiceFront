@@ -11,6 +11,8 @@ function AddCustomUser() {
     const [country, setcountry] = useState(null)
     const [getUserList, setUserList] = useState([]);
     const [ filteredUsers , setFilteredUsers]=useState(null);
+    const [refresh , setRefresh] = useState(false);
+
 
     useEffect(() => {
         async function getUserList() {
@@ -29,7 +31,7 @@ function AddCustomUser() {
             setUserList(response.data)
         }
         getUserList();
-    }, [])
+    }, [refresh])
 
     const columns = [
         { field: 'username', headerName: "Client Name", width: 150 },
@@ -100,7 +102,8 @@ function AddCustomUser() {
             console.log("Client sent successfully:"); // Handle successful response
             console.log(response);
             if(response.status===200){
-                alert("Client Added")
+                alert("Client Added");
+                setRefresh(!refresh)
             }
             else if(response.status === 404){
                 alert("Client Already Exist");

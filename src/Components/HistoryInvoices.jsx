@@ -12,7 +12,13 @@ function HistoryInvoices() {
 
     const navi = useNavigate();
     
-    
+    useEffect(()=>{
+        const temp = JSON.parse(localStorage.getItem('cred')).userName
+        console.log(temp);
+        setGeneratedBy(temp);
+      },[])
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -93,12 +99,7 @@ function HistoryInvoices() {
             }
         }
     ];
-    useEffect(()=>{
-        const temp = JSON.parse(localStorage.getItem('cred'))
-        console.log(temp);
-        setGeneratedBy(temp.userName);
-      },[])
-
+ 
 
     
     return (
