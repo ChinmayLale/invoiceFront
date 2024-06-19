@@ -12,30 +12,44 @@ import DraftInvoicesData from "./Components/DraftInvoicesData";
 import SignupForm from "./Components/SignupForm";
 
 function App() {
-  const [isLogedIn, setIsLogedIn] = useState(false);
-  // const localStorageData = localStorage.getItem('auth');
-  useEffect(() => {
-    localStorage.clear(); // This line clears all localStorage data
-  }, []);
+   const [isLogedIn, setIsLogedIn] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setIsLogedIn(true);
+      const decodedToken = decodeToken(token);
+      console.log(decodedToken)
+      if (decodedToken && decodedToken.exp > Date.now() / 1000) {
+        setIsLogedIn(true);
+      } else {
+        localStorage.removeItem("token");
+      }
     }
   }, []);
 
   function handleLogin() {
-    const userData = JSON.parse(localStorage.getItem("token"));
-    if (userData) {
+    const token = localStorage.getItem('token');
+    console.log(token)
+    // localStorage.setItem('token',token);
+    const decodedToken = decodeToken(token);
+    if (decodedToken && decodedToken.exp > Date.now() / 1000) {
       setIsLogedIn(true);
     } else {
-      alert('Wrong Credentials');
+      localStorage.removeItem("token");
+      alert("Wrong Credentials");
     }
   }
 
-  function handleLOgOut(){
-    localStorage.removeItem('token');
+  function handleLOgOut() {
+    localStorage.removeItem("token");
     setIsLogedIn(false);
+  }
+
+  function decodeToken(token) {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    // console.log(base64)
+    return JSON.parse(window.atob(base64));
   }
   
 

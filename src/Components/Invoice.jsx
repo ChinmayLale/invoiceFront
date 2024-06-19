@@ -311,8 +311,8 @@ function Invoice() {
 
 
   return (
-    <div className="cont flex-[4] flex items-center justify-center bg-stone-100 h-fit p-10 ml-5">
-      <div className=" border-gray-400 border-2 pl-6 pr-6 bg-white w-[100%]" ref={contentToPrint}>
+    <div className="relative flex-[4] flex items-center justify-center bg-stone-100 h-fit p-10 ml-5 ">
+      <div className=" border-gray-400 border-2 pl-6 pr-6 bg-white w-[100%] overflow-x-hidden" ref={contentToPrint}>
         <div className="flex justify-between items-end pb-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold">Invoice #<input type="number" className="text-left" onChange={handleInvoiceDataChange} placeholder={invoiceID} id='invoiceID' value={invoicedata.invoiceID} name="invoiceID" /></h1>

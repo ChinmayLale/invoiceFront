@@ -1,9 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
+import axios from 'axios';
 
 
 function DraftInvoicesData() {
 
+    useEffect(()=>{
+        async function getDraftInvoice(){
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(token).token}`
+                }
+            };
+            const response = await axios.get('https://invoice-generator-server.vercel.app/getdraftInvoice',config);
+            const rowData = response.data;
+            console.log(rowData);
+        }
+    },[])
     const [selectedRows, setSelectedRows] = useState([]);
 
     const columns = [
@@ -44,6 +58,8 @@ function DraftInvoicesData() {
         setSelectedRows(selectedRowData);
     };
 
+
+
     return (
         <div className="cont flex-[4] flex flex-col items-center justify-center bg-stone-100 h-fit p-4 ">
             <h1 className='relative text-3xl font-semibold'>Draft Saved Invoices</h1>
@@ -63,7 +79,7 @@ function DraftInvoicesData() {
                 
             />
             {selectedRows.length > 0 && (
-                <div className='w-full h-[20vh] bg-red-50'>
+                <div className=' relative w-full h-[20vh] bg-red-50'>
                     <h2>Selected Rows: {selectedRows}</h2>
                 </div>
             )}

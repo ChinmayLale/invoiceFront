@@ -21,7 +21,7 @@ function LoginPage({handleLogin}) {
             const postData = await axios.post('https://invoice-generator-server.vercel.app/login', { username: userName, password: pass});
             const respons =await postData.data;
             // console.log(respons);
-            if(postData.status === 200){
+            if(postData.status === 200 && postData.data){
                 setIsOpen(true)
                 setTimeout(() => {
                     localStorage.setItem('token',JSON.stringify(respons));
