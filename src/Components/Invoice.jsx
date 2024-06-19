@@ -311,7 +311,7 @@ function Invoice() {
 
 
   return (
-    <div className="relative flex-[4] flex items-center justify-center bg-stone-100 h-fit p-10 ml-5 ">
+    <div className="flex-[4] flex items-center justify-center bg-stone-100 h-fit p-10 ml-5 ">
       <div className=" border-gray-400 border-2 pl-6 pr-6 bg-white w-[100%] overflow-x-hidden" ref={contentToPrint}>
         <div className="flex justify-between items-end pb-4 mb-8">
           <div>
