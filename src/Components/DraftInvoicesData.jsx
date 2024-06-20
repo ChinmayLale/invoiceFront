@@ -4,7 +4,10 @@ import axios from 'axios';
 
 
 function DraftInvoicesData() {
+    const[tableData , setTableData] = useState(null);
+    const [selectedRows, setSelectedRows] = useState([]);
 
+    
     useEffect(()=>{
         async function getDraftInvoice(){
             const token = localStorage.getItem('token');
@@ -15,14 +18,15 @@ function DraftInvoicesData() {
             };
             const response = await axios.get('https://invoice-generator-server.vercel.app/getdraftInvoice',config);
             const rowData = response.data;
+            setTableData(rowData);
             console.log(rowData);
         }
     },[])
-    const [selectedRows, setSelectedRows] = useState([]);
+
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'firstName', headerName: 'First name', width: 130 },
+        { field: '_id', headerName: 'ID', width: 70 },
+        { field: 'companyName', headerName: 'Company Name', width: 130 },
         { field: 'lastName', headerName: 'Last name', width: 130 },
         {
             field: 'age',
@@ -65,7 +69,7 @@ function DraftInvoicesData() {
             <h1 className='relative text-3xl font-semibold'>Draft Saved Invoices</h1>
             <DataGrid
                 className='relative mt-4 w-[80%]'
-                rows={rows}
+                rows={tableData ? tableData : rows}
                 columns={columns}
                 initialState={{
                     pagination: {

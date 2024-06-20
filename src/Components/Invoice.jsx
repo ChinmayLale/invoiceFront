@@ -46,7 +46,10 @@ function Invoice() {
       Date: Date(),
       InvoiceDesc: '',
       Conditions: '',
-      CompanyLogo:imageState
+      CompanyLogo:imageState,
+      TotalBillAmount: 0,
+      TotalQuantity: 0,
+      taxableAmount: 0
     }
   ])
 
@@ -85,17 +88,59 @@ function Invoice() {
   }, [])
 
   // ========================================Table Functions==============================================================================
+  // const handleInputChange = (event, rowIndex) => {
+  //   const { name, value } = event.target;
+  //   const currentCost = event.target.value; //{`itemCost-${row.itemId}`}
+  //   // setTableData((prevData) =>
+  //   //   prevData.map((row, index) =>
+  //   //     index === rowIndex ? { ...row, [name]: value } : row
+  //   //   )
+  //   // );
+  //   setTableData((prevData) =>
+  //     prevData.map((row, index) =>
+  //       index === rowIndex
+  //        ? {
+  //            ...row,
+  //             [name]: value,
+  //             itemCost: row.itemAmount * row.itemQuant, // Calculate itemCost here
+  //           }
+  //         : row
+  //     )
+  //   );
+  //   setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax ,generatedBy: generatedBy ? generatedBy : addGeneratedBy()});
+  //   console.log(name + " : " + value);
+  //   console.log(currentCost);
+  // };
+
   const handleInputChange = (event, rowIndex) => {
     const { name, value } = event.target;
     const currentCost = event.target.value; //{`itemCost-${row.itemId}`}
     setTableData((prevData) =>
       prevData.map((row, index) =>
-        index === rowIndex ? { ...row, [name]: value } : row
+        index === rowIndex
+         ? {
+               ...row,
+                [name]: value,
+                itemCost: row.itemAmount * row.itemQuant, // Calculate itemCost here
+              }
+            : row
       )
     );
-    setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax ,generatedBy: generatedBy ? generatedBy : addGeneratedBy()});
-    console.log(name + " : " + value);
-    console.log(currentCost);
+    const totalQuantity = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant || 0), 0);
+    console.log("Total Quantity : ",totalQuantity)
+    const totalAmount = tableData.reduce((acc, row) => acc + parseFloat(row.itemAmount || 0), 0);
+    console.log("Total Amount : ",totalAmount)
+    const totalPrice = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant) * parseFloat(row.itemAmount), 0);
+    console.log("Total Price : ",totalPrice);
+    const taxableAmount = totalPrice + (totalPrice * tax / 100);
+    setInvoiceData((prevData) => ({
+      ...prevData,
+      tableData: tableData,
+      TotalBillAmount: taxableAmount,
+      TotalQuantity: totalQuantity,
+      taxableAmount: taxableAmount,
+      generatedBy: generatedBy ? generatedBy : addGeneratedBy()
+    }));
   };
 
 
@@ -195,7 +240,8 @@ function Invoice() {
       }
     };
     setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy }));
-    const responce = await axios.post('https://invoice-generator-server.vercel.app/draftInvoice', invoicedata, config)
+    // https://invoice-generator-server.vercel.app
+    const responce = await axios.post('http://localhost:8000/draftInvoice', invoicedata, config)
     console.log(responce.data);
     if (responce.status === 200) {
       alert('Draft Saved !')
@@ -236,14 +282,28 @@ function Invoice() {
     console.log(invoicedata)
   };
 
-  // ======================================calculating Total Quant=============================================================
+  // ======================================calculating Total Quant , Amount , Price=======================================================
+
   useEffect(() => {
     const calculateTotalQuantity = () => {
       const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant || 0), 0);
       setTotalQuant(total);
+      setInvoiceData((prevData) => ({ ...prevData, TotalQuantity: total })); // Update invoicedata with TotalQuantity
     };
     calculateTotalQuantity();
   }, [tableData]);
+
+
+  useEffect(() => {
+    const CalculateTotalAmount = () => {
+      const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemAmount || 0), 0);
+      setTotalAmount(total);
+      setInvoiceData((prevData) => ({ ...prevData, TotalAmount: total })); // Update invoicedata with TotalQuantity
+    };
+    CalculateTotalAmount();
+  }, [tableData]);
+
+
 
   // =====================================calculating Total amount=============================================================
   useEffect(() => {
@@ -496,7 +556,7 @@ function Invoice() {
                   value={`₹ ${totalAmount * tax / 100}`}
                   id={`TaxAmount`}
                   name="Tax"
-                  // onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice)} }
+                  onChange={(e) =>{setAmountWithTax(((e.target.value*totalPrice)/100)+totalPrice)} }
                   className="w-[40px]"
                   readOnly
                 /></td>
