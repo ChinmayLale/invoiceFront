@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 
-const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name , visible , gst}) => {
-  const [inputValue, setInputValue] = useState(''); // State for search input
+const DropDownWidget = ({ companies, onSelect ,onChange ,placeholder ,id ,name , visible , gst , copiedName}) => {
+  const [inputValue, setInputValue] = useState(copiedName || ''); // State for search input
   // const [filteredCompanies, setFilteredCompanies] = useState(companies); // State for filtered companies
   const selectRef = useRef(null); // Ref for the select element
 

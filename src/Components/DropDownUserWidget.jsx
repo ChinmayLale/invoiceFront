@@ -4,9 +4,9 @@ import React, { useState, useRef, useEffect } from 'react';
 
 
 
-function DropDownUserWidget ({ companies, onSelect ,onChange ,placeholder ,id ,name , visible}) {
+function DropDownUserWidget ({ companies, onSelect ,onChange ,placeholder ,id ,copiedData,name , visible}) {
 
-    const [inputValue, setInputValue] = useState(''); // State for search inpu
+    const [inputValue, setInputValue] = useState(copiedData || ''); // State for search inpu
     const selectRef = useRef(null); // Ref for the select element
 
     const handleInputChange = (event) => {

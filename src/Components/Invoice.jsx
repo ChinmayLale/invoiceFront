@@ -43,7 +43,7 @@ function Invoice() {
       UserName: '',
       UserAddressL1: '' || getCopiedData ? getCopiedData.UserAddressL1 : '',
       UserContact: '',
-      Date: Date(),
+      Date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
       InvoiceDesc: '',
       Conditions: '',
       CompanyLogo:imageState,
@@ -65,19 +65,8 @@ function Invoice() {
     removeAfterPrint: true,
   });
 
-  //============================================ Get Copied Invoice Data =================================================================
-  // useEffect(() => {
-  //   const copiedData = JSON.parse(localStorage.getItem('copiedInvoice'))
-  //   if (copiedData) {
-  //     // console.log(copiedData);
-  //     setCopiedData(copiedData[0]);
-  //     localStorage.removeItem('copiedInvoice')
-  //     console.log("Copied Data Found !")
-  //     console.log(copiedData[0])
-  //   }
-  // }, [])
 
-    // ========================================== Copy Invoice Funtion ===============================================================
+    // ========================================== Copy Invoice Data Funtion ===============================================================
     useEffect(() => {
       const copiedData = JSON.parse(localStorage.getItem('copiedInvoice'));
       if (copiedData) {
@@ -94,9 +83,17 @@ function Invoice() {
           UserAddressL1: copiedData[0].UserAddressL1,
           UserContact: copiedData[0].UserContact,
           CompanyName : copiedData[0].CompanyName,
-          CompanyAddressL1 : copiedData[0].CompanyAddressL1
+          CompanyAddressL1 : copiedData[0].CompanyAddressL1,
+          InvoiceDesc:copiedData[0].InvoiceDesc,
+          Conditions:copiedData[0].Conditions,
+          // CompanyLogo:imageState,
+          TotalBillAmount: copiedData[0].TotalBillAmount,
+          TotalQuantity: copiedData[0].TotalQuantity,
+          taxableAmount: copiedData[0].taxableAmount
         }));
-        setTableData(copiedData[0].tableData)
+        setTableData(copiedData[0].tableData);
+        // const compname = document.getElementById('company_name');
+        // compname.value = copiedData[0].CompanyName;
         localStorage.removeItem('copiedInvoice');
       }
     }, []);
@@ -112,30 +109,6 @@ function Invoice() {
   }, [])
 
   // ========================================Table Functions==============================================================================
-  // const handleInputChange = (event, rowIndex) => {
-  //   const { name, value } = event.target;
-  //   const currentCost = event.target.value; //{`itemCost-${row.itemId}`}
-  //   // setTableData((prevData) =>
-  //   //   prevData.map((row, index) =>
-  //   //     index === rowIndex ? { ...row, [name]: value } : row
-  //   //   )
-  //   // );
-  //   setTableData((prevData) =>
-  //     prevData.map((row, index) =>
-  //       index === rowIndex
-  //        ? {
-  //            ...row,
-  //             [name]: value,
-  //             itemCost: row.itemAmount * row.itemQuant, // Calculate itemCost here
-  //           }
-  //         : row
-  //     )
-  //   );
-  //   setInvoiceData({ ...invoicedata, tableData: tableData, TotalBillAmount: totalPrice, TotalQuantity: totalQuant, taxableAmount: amountWithTax ,generatedBy: generatedBy ? generatedBy : addGeneratedBy()});
-  //   console.log(name + " : " + value);
-  //   console.log(currentCost);
-  // };
-
   const handleInputChange = (event, rowIndex) => {
     const { name, value } = event.target;
     const currentCost = event.target.value; //{`itemCost-${row.itemId}`}
@@ -201,7 +174,7 @@ function Invoice() {
     reader.onload = (e) => {
       const base64Image = e.target.result;
       console.log(base64Image)
-      setImageState(base64Image); // Update imageState with base64 data
+      setImageState(base64Image.toString()); // Update imageState with base64 data
     };
 
     // Validate file type (optional):
@@ -250,6 +223,9 @@ function Invoice() {
       const responce = await axios.post('https://invoice-generator-server.vercel.app/post', invoicedata, config);
       console.log(invoicedata);
       console.log(responce.data);
+      if(responce.status===200){
+        alert("Invoice generated")
+      }
     }, 1000)
     setTimeout(() => {
       btn.style.display = 'block';
@@ -309,25 +285,6 @@ function Invoice() {
 
   // ======================================calculating Total Quant , Amount , Price=======================================================
 
-  // useEffect(() => {
-  //   const calculateTotalQuantity = () => {
-  //     const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant || 0), 0);
-  //     setTotalQuant(total);
-  //     setInvoiceData((prevData) => ({ ...prevData, TotalQuantity: total })); // Update invoicedata with TotalQuantity
-  //   };
-  //   calculateTotalQuantity();
-  // }, [tableData]);
-
-
-  // useEffect(() => {
-  //   const CalculateTotalAmount = () => {
-  //     const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemAmount || 0), 0);
-  //     setTotalAmount(total);
-  //     setInvoiceData((prevData) => ({ ...prevData, TotalAmount: total })); // Update invoicedata with TotalQuantity
-  //   };
-  //   CalculateTotalAmount();
-  // }, [tableData]);
-
   useEffect(() => {
     const calculateTotalQuantity = () => {
       const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant || 0), 0);
@@ -379,9 +336,6 @@ function Invoice() {
     const updatedTableData = tableData.filter((_, index) => index !== rowIndex);
     setTableData(updatedTableData);
   };
-
-
-
 
 
   // =============================================== User Select Box Functions =======================================================
@@ -444,27 +398,25 @@ function Invoice() {
               <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
                 {companies &&
                   <DropDownWidget companies={companies} onSelect={handleCompanySelect} className="text-right" onChange={handleInvoiceDataChange} placeholder="Company Name" id='CompanyName' value={invoicedata.CompanyName} name="CompanyName"
-                    visible={visible} gst={() => { setISHavingGst(true) }} />}</b>
+                    visible={visible} gst={() => { setISHavingGst(true) }} copiedName={invoicedata.CompanyName}/>}</b>
             </div>
             <p className="p-0 mb-1"><textarea type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 1" id='CompanyAddressL1' value={invoicedata.CompanyAddressL1} name="CompanyAddressL1" />,</p>
-            {/* <p className="p-0 mb-1"><input type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="Address Line 2" id='CompanyAddress2' value={invoicedata.CompanyAddressL2} name="CompanyAddressL2" />,</p>
-            <p className="p-0 mb-1"><input type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="City , State" id='CompanyAddress3' value={invoicedata.CompanyAddressL3} name="CompanyAddressL3" />,</p>
-            <p className="p-0 mb-1"><input type="text" className="text-right" onChange={handleInvoiceDataChange} placeholder="City , State" id='CompanyAddress4' value={invoicedata.CompanyCountry} name="CompanyCountry" /></p> */}
+        
           </div>
 
           <div className="h-px bg-gray-300 my-4" />
 
           <div>
             <p className="p-0 mb-1">
-              <b>Bill to:</b>
+              <b>Bill to : </b>
             </p>
             <b className="p-0 mb-1 flex flex-col items-end  bg-white-100 w-fit">
               {clients && clients.length > 1 &&
                 <DropDownUserWidget companies={clients} onSelect={handleUserSelect} className="text-left" onChange={handleInvoiceDataChange} placeholder="Client Name" id='UserName' value={invoicedata.UserName} name="UserName"
-                  visible={visible} />}</b>
+                  visible={visible} copiedData={invoicedata.UserName}/>}</b>
+
             <p className="p-0 mb-1"><textarea type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 1" id='UserAddressL1' value={invoicedata.UserAddressL1} name="UserAddressL1" />,</p>
-            {/* <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="User Address Line 2" id='UserAddressL2' value={invoicedata.UserAddressL2} name="UserAddressL2" />,</p>
-            <p className="p-0 mb-1"><input type="text" className="text-left" onChange={handleInvoiceDataChange} placeholder="City , State , Country" id='UserCountry' value={invoicedata.UserCountry} name="UserCountry" /></p> */}
+
             <p className="p-0 mb-1"><input type="number" className="text-left" onChange={handleInvoiceDataChange} placeholder="Contact Number" id='UserContact' value={invoicedata.UserContact} name="UserContact" /></p>
           </div>
         </div>
