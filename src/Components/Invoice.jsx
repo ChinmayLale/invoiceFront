@@ -40,7 +40,7 @@ function Invoice() {
       CompanyName: '',
       OwnerName: '',
       CompanyAddressL1: '',
-      UserName: '' || getCopiedData ? getCopiedData.UserName : '',
+      UserName: '',
       UserAddressL1: '' || getCopiedData ? getCopiedData.UserAddressL1 : '',
       UserContact: '',
       Date: Date(),
@@ -66,16 +66,40 @@ function Invoice() {
   });
 
   //============================================ Get Copied Invoice Data =================================================================
-  useEffect(() => {
-    const copiedData = JSON.parse(localStorage.getItem('copiedInvoice'))
-    if (copiedData) {
-      // console.log(copiedData);
-      setCopiedData(copiedData[0]);
-      localStorage.removeItem('copiedInvoice')
-      console.log("Copied Data Found !")
-      console.log(copiedData[0])
-    }
-  }, [])
+  // useEffect(() => {
+  //   const copiedData = JSON.parse(localStorage.getItem('copiedInvoice'))
+  //   if (copiedData) {
+  //     // console.log(copiedData);
+  //     setCopiedData(copiedData[0]);
+  //     localStorage.removeItem('copiedInvoice')
+  //     console.log("Copied Data Found !")
+  //     console.log(copiedData[0])
+  //   }
+  // }, [])
+
+    // ========================================== Copy Invoice Funtion ===============================================================
+    useEffect(() => {
+      const copiedData = JSON.parse(localStorage.getItem('copiedInvoice'));
+      if (copiedData) {
+        setCopiedData(copiedData[0]);
+      
+        console.log("Copied Data Found !!!!!!!!!!");
+        console.log(copiedData[0].tableData);
+        console.log("=================UserName==================");
+        console.log(copiedData[0].UserName);
+        // Pre-fill the fields with the copied data
+        setInvoiceData((prevData) => ({
+          ...prevData,
+          UserName: copiedData[0].UserName,
+          UserAddressL1: copiedData[0].UserAddressL1,
+          UserContact: copiedData[0].UserContact,
+          CompanyName : copiedData[0].CompanyName,
+          CompanyAddressL1 : copiedData[0].CompanyAddressL1
+        }));
+        setTableData(copiedData[0].tableData)
+        localStorage.removeItem('copiedInvoice');
+      }
+    }, []);
 
   // ======================================= Generate Invoice ID Here =====================================================================
 
@@ -121,7 +145,7 @@ function Invoice() {
          ? {
                ...row,
                 [name]: value,
-                itemCost: row.itemAmount * row.itemQuant, // Calculate itemCost here
+                itemCost: parseFloat(row.itemAmount) * parseFloat(row.itemQuant), // Calculate itemCost here
               }
             : row
       )
@@ -133,6 +157,7 @@ function Invoice() {
     const totalPrice = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant) * parseFloat(row.itemAmount), 0);
     console.log("Total Price : ",totalPrice);
     const taxableAmount = totalPrice + (totalPrice * tax / 100);
+    console.log("Total Price Including Tax : ",totalPrice);
     setInvoiceData((prevData) => ({
       ...prevData,
       tableData: tableData,
@@ -284,24 +309,50 @@ function Invoice() {
 
   // ======================================calculating Total Quant , Amount , Price=======================================================
 
+  // useEffect(() => {
+  //   const calculateTotalQuantity = () => {
+  //     const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant || 0), 0);
+  //     setTotalQuant(total);
+  //     setInvoiceData((prevData) => ({ ...prevData, TotalQuantity: total })); // Update invoicedata with TotalQuantity
+  //   };
+  //   calculateTotalQuantity();
+  // }, [tableData]);
+
+
+  // useEffect(() => {
+  //   const CalculateTotalAmount = () => {
+  //     const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemAmount || 0), 0);
+  //     setTotalAmount(total);
+  //     setInvoiceData((prevData) => ({ ...prevData, TotalAmount: total })); // Update invoicedata with TotalQuantity
+  //   };
+  //   CalculateTotalAmount();
+  // }, [tableData]);
+
   useEffect(() => {
     const calculateTotalQuantity = () => {
       const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant || 0), 0);
       setTotalQuant(total);
-      setInvoiceData((prevData) => ({ ...prevData, TotalQuantity: total })); // Update invoicedata with TotalQuantity
     };
     calculateTotalQuantity();
-  }, [tableData]);
-
-
-  useEffect(() => {
-    const CalculateTotalAmount = () => {
+  
+    const calculateTotalAmount = () => {
       const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemAmount || 0), 0);
       setTotalAmount(total);
-      setInvoiceData((prevData) => ({ ...prevData, TotalAmount: total })); // Update invoicedata with TotalQuantity
     };
-    CalculateTotalAmount();
-  }, [tableData]);
+    calculateTotalAmount();
+  
+    const calculateTotalPrice = () => {
+      const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemQuant) * parseFloat(row.itemAmount), 0);
+      setTotalPrice(total);
+    };
+    calculateTotalPrice();
+  
+    const calculateAmountWithTax = () => {
+      const total = totalPrice + (totalPrice * tax / 100);
+      setAmountWithTax(total);
+    };
+    calculateAmountWithTax();
+  }, [tableData, tax]); // Add tableData as a dependency
 
 
 
@@ -328,6 +379,10 @@ function Invoice() {
     const updatedTableData = tableData.filter((_, index) => index !== rowIndex);
     setTableData(updatedTableData);
   };
+
+
+
+
 
   // =============================================== User Select Box Functions =======================================================
 

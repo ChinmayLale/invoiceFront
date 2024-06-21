@@ -31,7 +31,8 @@ function HistoryInvoices() {
                 const response = await axios.get('https://invoice-generator-server.vercel.app/tableData', config);
                 const d = response.data;
                 // const filterHistory = d.filter((obj)=>obj.generatedBy===generatedBy);
-                setRowData(d);
+                const rowsWithId = d.map((row, index) => ({ ...row, id: index+1 }));
+                setRowData(rowsWithId);
                 console.log("Row Data Set & Data is \n\n");
                 console.log(d);
             } catch (error) {
@@ -49,14 +50,28 @@ function HistoryInvoices() {
         return () => clearInterval(intervalId);
     }, []);
 
-    const copyInvoice = (params) => {
-        const clickedRow = params.row;
-        console.log('Clicked on row details:');
-        const copyData = rowData.filter((obj)=>obj.UserName === clickedRow.UserName);
-        console.log(copyData[0])
-        localStorage.setItem("copiedInvoice",JSON.stringify(copyData))
-        navi('/newInvoice')
-    }
+    const copyInvoice = async (params) => {
+        console.log(params);
+      
+        // Check if params.row exists before accessing it
+        const clickedRow = params.row ? params.row :'';
+        if (params.row) {
+          
+          console.log('Clicked on row details:');
+          console.log(clickedRow.UserName);
+        } else {
+          console.error('Missing row data in params');
+        }
+      
+        console.log("table Data is ");
+        console.log(tableData);
+        const CopyData = await tableData.filter((obj) => obj.UserName===clickedRow.UserName);
+        console.log(CopyData);
+        localStorage.setItem("copiedInvoice", JSON.stringify(CopyData));
+        navi('/newInvoice');
+      };
+      
+   
 
     useEffect(() => {
         var data = null
@@ -64,14 +79,7 @@ function HistoryInvoices() {
             const filteredData = rowData.filter(obj => obj.generatedBy === generatedBy);
             console.log("----------------------------------------------------------")
             console.log(filteredData)
-            data = filteredData.map((obj, index) => ({
-                id: index + 1,
-                UserName: obj.UserName,
-                invoiceID: obj.invoiceID ? obj.invoiceID : '455',
-                UserContact: obj.UserContact ? obj.UserContact : '999999999',
-                Status: obj.status ? obj.status : '404'
-            }));
-            setTableData(data);
+            setTableData(filteredData);
             console.log("Filtered Data : ");
             console.log(tableData)
         }
@@ -84,7 +92,7 @@ function HistoryInvoices() {
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'UserName', headerName: 'UserName', width: 150 },
-        { field: 'invoiceID', headerName: 'Invoice Id', width: 100 },
+        { field: 'CompanyName', headerName: 'Company Name', width: 170 },
         { field: 'UserContact', headerName: 'UserContact', width: 100 },
         {
             field: 'Current Status',
