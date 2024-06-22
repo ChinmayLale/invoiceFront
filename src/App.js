@@ -29,7 +29,7 @@ function App() {
 
   function handleLogin() {
     const token = localStorage.getItem('token');
-    console.log(token)
+    // console.log(token)
     // localStorage.setItem('token',token);
     const decodedToken = decodeToken(token);
     if (decodedToken && decodedToken.exp > Date.now() / 1000) {

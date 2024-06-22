@@ -14,7 +14,7 @@ function LoginPage({handleLogin}) {
 
     const handleSignIn = async (e) => {
         e.preventDefault()
-        console.log(`UserName - ${userName} , Password - ${pass}`);
+        console.log(`UserName - ${userName} `);
         localStorage.setItem('cred', JSON.stringify({ userName }));
         try {
             // https://invoice-generator-server.vercel.app/

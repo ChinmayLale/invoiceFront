@@ -28,6 +28,8 @@ function HistoryInvoices() {
                         Authorization: `Bearer ${JSON.parse(token).token}`
                     }
                 };
+                //https://invoice-generator-server.vercel.app
+                //http://localhost:8000
                 const response = await axios.get('https://invoice-generator-server.vercel.app/tableData', config);
                 const d = response.data;
                 // const filterHistory = d.filter((obj)=>obj.generatedBy===generatedBy);
@@ -92,7 +94,7 @@ function HistoryInvoices() {
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'UserName', headerName: 'UserName', width: 150 },
-        { field: 'CompanyName', headerName: 'Company Name', width: 170 },
+        { field: 'CompanyName' || 'companyName', headerName: 'Company Name', width: 170 },
         { field: 'UserContact', headerName: 'UserContact', width: 100 },
         {
             field: 'Current Status',

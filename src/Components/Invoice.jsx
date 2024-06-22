@@ -219,6 +219,7 @@ function Invoice() {
     setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy, CompanyLogo: imageState }));
     console.log("---------------------------------------------------------------------------------------------------------------------");
     // https://invoice-generator-server.vercel.app
+    //http://localhost:8000
     setTimeout(async () => {
       const responce = await axios.post('https://invoice-generator-server.vercel.app/post', invoicedata, config);
       console.log(invoicedata);
@@ -229,6 +230,7 @@ function Invoice() {
     }, 1000)
     setTimeout(() => {
       btn.style.display = 'block';
+      setvisible(true);
     }, 2000)
   }
 

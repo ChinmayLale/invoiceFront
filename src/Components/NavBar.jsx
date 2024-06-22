@@ -39,7 +39,7 @@ function NavBar({handleLOgOut}) {
         <img src={user} alt="" className='h-[70%] rounded-[50%]' />
         <h2 className='text-lg font-normal text-green-200 hover:scale-110 duration-100 cursor-pointer hover:text-green-300 pb-2'>{userName}</h2>
         </div>
-        <i class="ri-login-box-line text-2xl font-normal text-white cursor-pointer" onClick={handleLogOut}></i>
+        <i className="ri-login-box-line text-2xl font-normal text-white cursor-pointer" onClick={handleLogOut}></i>
       </div>
       
     </div>
