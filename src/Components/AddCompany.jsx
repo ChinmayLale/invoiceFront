@@ -14,6 +14,8 @@ function AddCompany() {
     const [companyList, setCompanyList] = useState([''])
     const [getUser, setUser] = useState('');
     const [refresh, setRefresh] = useState(false);
+    const [deleteCopm , setDeleteComp] = useState(null);
+
 
     useEffect(() => {
         async function getCompanyList() {
@@ -63,15 +65,36 @@ function AddCompany() {
         }
     }
 
-    const handleRowClick = (params) => {
-        const clickedRow = params.row;
-        console.log('Clicked on row details:');
+    const handleRowClick = async(params) => {
+        const clickedRow =await params.row;
+        console.log('Clicked on row details:',clickedRow);
+        setDeleteComp(clickedRow._id);
         setcompanyName(clickedRow.companyName);
         setownerName(clickedRow.ownerName);
         setemail(clickedRow.email)
         setgstNumber(clickedRow.gstNumber);
         setaddState(clickedRow.addState);
         setcountry(clickedRow.country)
+      };
+
+      const handleDeleteCompany = async () => {
+        const token = localStorage.getItem('token');
+        // console.log(JSON.parse(token).token)
+        console.log("Req Recived For Deleting Company With ID : ", deleteCopm);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(token).token}`,
+          },
+        };
+        try {
+          const response = await axios.post(`https://invoice-generator-server.vercel.app/deletecompany`,{deleteCopm}, config);
+          if (response.status === 200) {
+            alert("Company Deleted");
+          }
+          setRefresh(!refresh);
+        } catch (error) {
+          console.error("Error deleting company:", error);
+        }
       };
 
 
@@ -86,8 +109,8 @@ function AddCompany() {
             renderCell: (params) => {
                 return (
                     <div className='relative flex flex-row items-center justify-center gap-4'>
-                        <button className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl text-sm'>Delete</button>
-                        <button className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-green-300 text-green-900 h-[80%] rounded-xl text-sm' >Edit</button>
+                        <button onClick={handleDeleteCompany} className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl text-sm'>Delete</button>
+                        <button className='relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-green-300 text-green-900 h-[80%] rounded-xl text-sm' onClick={()=>{handleRowClick(params)}} >Edit</button>
                     </div>
                 )
             }
@@ -148,7 +171,7 @@ function AddCompany() {
                     rows={filteredCompanyList}
                     getRowId={(row) => row._id}
                     columns={columns}
-                    onRowClick={handleRowClick}
+                    // onRowClick={handleRowClick}
                     initialState={{
                         pagination: {
                             paginationModel: { page: 0, pageSize: 6 },

@@ -18,7 +18,7 @@ function LoginPage({handleLogin}) {
         localStorage.setItem('cred', JSON.stringify({ userName }));
         try {
             // https://invoice-generator-server.vercel.app/
-            const postData = await axios.post('https://invoice-generator-server.vercel.app/login', { username: userName, password: pass});
+            const postData = await axios.post('http://localhost:8000/login', { username: userName, password: pass});
             const respons =await postData.data;
             // console.log(respons);
             if(postData.status === 200 && postData.data){

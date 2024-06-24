@@ -12,7 +12,7 @@ function AddCustomUser() {
     const [getUserList, setUserList] = useState([]);
     const [ filteredUsers , setFilteredUsers]=useState(null);
     const [refresh , setRefresh] = useState(false);
-
+    const [ deluserID , setDeluserID] = useState(null);
 
     useEffect(() => {
         async function getUserList() {
@@ -42,38 +42,9 @@ function AddCustomUser() {
             headerName: 'Action',
             width: 80,
             renderCell: (params) => {
-              const handleDelete = async () => {
-                const userId = params.row._id; // Get user ID from the row object
-                const token = localStorage.getItem('token');
-                const config = {
-                  headers: {
-                    Authorization: `Bearer ${JSON.parse(token).token}`,
-                  },
-                };
-                try {
-                  const response = await axios.delete(
-                    `https://invoice-generator-server.vercel.app/deleteUser/${userId}`,
-                    config
-                  );
-                  if (response.status === 200) {
-                    const updatedUserList = getUserList.filter(
-                      (user) => user._id !== userId
-                    );
-                    setUserList(updatedUserList);
-                    setFilteredUsers(updatedUserList.filter((obj) => obj.registeredBy === JSON.parse(localStorage.getItem('cred')).userName));
-                    alert('Client Deleted Successfully!');
-                  } else {
-                    alert('Error Deleting Client!');
-                  }
-                } catch (error) {
-                  console.error('Error deleting user:', error);
-                  alert('Error Deleting Client!');
-                }
-              };
-      
               return (
                 <>
-                  <button className="relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl" onClick={handleDelete}>
+                  <button className="relative flex flex-row items-center justify-center w-fit px-2 py-1 m-1 bg-red-300 text-red-900 h-[80%] rounded-xl" onClick={async()=>{console.log(params.row._id);setDeluserID(params.row._id);setTimeout(()=>{handleDeleteClient()},1000)}}>
                     Delete
                   </button>
                 </>
@@ -114,9 +85,29 @@ function AddCustomUser() {
         }
     }
 
-    // const getUser = JSON.parse( localStorage.getItem('cred'));
-    // console.log(getUser.userName);
-    // const filteredCompanyList =getUserList ? getUserList.filter((obj) => obj.username === getUser.userName) :[''];
+    const handleDeleteClient = async () => {
+        const token = localStorage.getItem('token');
+        // console.log(deluserID)
+        console.log("Req Recived For Deleting Company With ID : ", deluserID);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(token).token}`,
+          },
+        };
+        try {
+          const response = await axios.post(`https://invoice-generator-server.vercel.app/deleteCustomUser`,{deluserID}, config);
+          if (response.status === 200) {
+            alert("Client Deleted");
+          }
+          setRefresh(!refresh);
+        } catch (error) {
+          console.error("Error deleting Client:", error);
+        }
+      };
+
+
+
+
 
     return (
         <div className='relative flex-[4]  h-[90vh] w-full flex flex-col bg-white'>

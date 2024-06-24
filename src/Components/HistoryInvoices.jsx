@@ -8,8 +8,8 @@ function HistoryInvoices() {
     const [rowData, setRowData] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [generatedBy , setGeneratedBy] = useState(null)
-
-
+    const [ delInvoiceID , setDelInvoiceID] = useState(null);
+    const [refresh , setRefresh] = useState(false);
     const navi = useNavigate();
     
     useEffect(()=>{
@@ -91,6 +91,7 @@ function HistoryInvoices() {
         console.log(tableData)
     }, [rowData,generatedBy]);
 
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'UserName', headerName: 'UserName', width: 150 },
@@ -99,16 +100,38 @@ function HistoryInvoices() {
         {
             field: 'Current Status',
             headerName: 'Action',
-            width: 60,
+            width: 150,
             renderCell: (params) => {
                 return (
-                    <>
-                        <button className='bg flex flex-row items-center justify-center bg-green-300 m-1 h-[60%] text-center w-[100%] p-2 rounded-lg font-semibold' onClick={copyInvoice}>Copy</button>
-                    </>
+                    <div className='flex flex-row w-fit h-full'>
+                        <button className='bg flex flex-row items-center justify-center bg-green-300 m-1 h-[50%] text-center w-[40%] p-2 rounded-lg font-medium' onClick={()=>{copyInvoice(params)}}>Copy</button>
+
+                        <button className='bg flex flex-row items-center justify-center bg-red-300 m-1 h-[50%] text-center w-[40%] p-2 rounded-lg font-medium' onClick={async()=>{console.log(params.row._id);await setDelInvoiceID(params.row._id);setTimeout(()=>{handleDeleteinVoice()},1000)}}>Delete</button>
+                    </div>
                 )
             }
         }
     ];
+
+    const handleDeleteinVoice = async () => {
+        const token = localStorage.getItem('token');
+        // console.log(deluserID)
+        console.log("Req Recived For Deleting Company With ID : ", delInvoiceID);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(token).token}`,
+          },
+        };
+        try {
+          const response = await axios.post(`https://invoice-generator-server.vercel.app/deleteCustominvoice`,{delInvoiceID}, config);
+          if (response.status === 200) {
+            alert("Invoice Deleted");
+          }
+          setRefresh(!refresh);
+        } catch (error) {
+          console.error("Error deleting Client:", error);
+        }
+      };
  
 
     
@@ -130,7 +153,7 @@ function HistoryInvoices() {
                             },
                         }}
                         pageSizeOptions={[5, 8, 10]}
-                        onRowClick={copyInvoice}
+                        // onRowClick={copyInvoice}
                         checkboxSelection
                         autosizeOnMount
                     />}
