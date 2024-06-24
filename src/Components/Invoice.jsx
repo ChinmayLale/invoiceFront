@@ -244,7 +244,7 @@ function Invoice() {
     };
     await setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy }));
     // https://invoice-generator-server.vercel.app
-    const responce = await axios.post('http://localhost:8000/draftInvoice', invoicedata, config);
+    const responce = await axios.post('https://invoice-generator-server.vercel.app/draftInvoice', invoicedata, config);
     console.log(responce.data);
     if (responce.status === 200) {
       alert('Draft Saved !')
