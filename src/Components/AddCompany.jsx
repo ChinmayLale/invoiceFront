@@ -19,6 +19,9 @@ function AddCompany() {
 
     useEffect(() => {
         async function getCompanyList() {
+            const user = localStorage.getItem('cred');
+            console.log("AUTH DATA IS - ",JSON.parse(user))
+            setUser(JSON.parse(user).userName);
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
@@ -165,10 +168,11 @@ function AddCompany() {
 
             </div>
 
-            <div className='companyLists w-[80%] h-[80vh] bg-white p-5 flex flex-col'>
+            <div className='companyLists w-full h-[80vh] bg-white p-5 flex flex-col overflow-x-hidden mt-4'>
                 <h1 className="text-3xl font-semibold text-left m-2">Previously Registered Companies</h1>
                 {filteredCompanyList && <DataGrid
                     rows={filteredCompanyList}
+                    // className=' max-w-[80vw] overflow-x-hidden'
                     getRowId={(row) => row._id}
                     columns={columns}
                     // onRowClick={handleRowClick}

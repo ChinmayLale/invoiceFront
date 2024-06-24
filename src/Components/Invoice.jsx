@@ -242,14 +242,15 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
-    setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy }));
+    await setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy }));
     // https://invoice-generator-server.vercel.app
-    const responce = await axios.post('http://localhost:8000/draftInvoice', invoicedata, config)
+    const responce = await axios.post('http://localhost:8000/draftInvoice', invoicedata, config);
     console.log(responce.data);
     if (responce.status === 200) {
       alert('Draft Saved !')
     }
   }
+
   // ============================================== Company Select Box Functions    ==============================================
 
   useEffect(() => {
@@ -285,7 +286,7 @@ function Invoice() {
     console.log(invoicedata)
   };
 
-  // ======================================calculating Total Quant , Amount , Price=======================================================
+//======================================calculating Total Quant , Amount , Price=======================================================
 
   useEffect(() => {
     const calculateTotalQuantity = () => {

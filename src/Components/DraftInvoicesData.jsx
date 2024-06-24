@@ -6,26 +6,41 @@ import axios from 'axios';
 function DraftInvoicesData() {
     const[tableData , setTableData] = useState(null);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [user , setUser] = useState(null);
+    const [filteredData , setFilterdData] = useState(null);
 
-    
+
     useEffect(()=>{
         async function getDraftInvoice(){
+           
             const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     Authorization: `Bearer ${JSON.parse(token).token}`
                 }
             };
-            const response = await axios.get('https://invoice-generator-server.vercel.app/getdraftInvoice',config);
+            const response = await axios.get('http://localhost:8000/getdraftInvoice',config);
             const rowData = response.data;
-            setTableData(rowData);
-            console.log(rowData);
+            const datawithID = await rowData.map((obj,index)=>({...obj,id:index+1}))
+            setTableData(datawithID);
+            console.log(datawithID);
         }
+        getDraftInvoice();
+        const u = localStorage.getItem('cred');
+        setUser(JSON.parse(u).userName);
+        console.log("JSON.parse(u).userName = ",JSON.parse(u).userName);
     },[])
+
+    useEffect(()=>{
+        if(tableData && tableData.length>1){
+            setFilterdData(tableData); 
+            console.log(filteredData);
+        }
+    },[tableData])
 
 
     const columns = [
-        { field: '_id', headerName: 'ID', width: 70 },
+        { field: 'id', headerName: 'ID', width: 70 },
         { field: 'companyName', headerName: 'Company Name', width: 130 },
         { field: 'lastName', headerName: 'Last name', width: 130 },
         {
@@ -62,14 +77,14 @@ function DraftInvoicesData() {
         setSelectedRows(selectedRowData);
     };
 
-
+   
 
     return (
-        <div className="cont flex-[4] flex flex-col items-center justify-center bg-stone-100 h-fit p-4 ">
+        <div className="cont flex-[4] flex flex-col items-center justify-center bg-white h-[90vh] p-4 ">
             <h1 className='relative text-3xl font-semibold'>Draft Saved Invoices</h1>
-            <DataGrid
+            {filteredData && <DataGrid
                 className='relative mt-4 w-[80%]'
-                rows={tableData ? tableData : rows}
+                rows={filteredData}
                 columns={columns}
                 initialState={{
                     pagination: {
@@ -81,7 +96,7 @@ function DraftInvoicesData() {
                 checkboxSelection={handleSelectionChange}
                 onSelectionModelChange={handleSelectionChange}
                 
-            />
+            />}
             {selectedRows.length > 0 && (
                 <div className=' relative w-full h-[20vh] bg-red-50'>
                     <h2>Selected Rows: {selectedRows}</h2>
