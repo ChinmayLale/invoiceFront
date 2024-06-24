@@ -58,7 +58,7 @@ function App() {
       {isLogedIn ? (
         <>
           <NavBar handleLOgOut = {handleLOgOut}/>
-          <div className="container flex overflow-x-hidden items-start h-fit bg-slate-100">
+          <div className="container flex overflow-x-hidden items-start h-fit bg-slate-100 w-[100vw]">
             <SideMenuBar />
             <Routes>
               <Route path="/" element={<DashBoard />} />

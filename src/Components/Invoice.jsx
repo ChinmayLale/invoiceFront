@@ -73,7 +73,7 @@ function Invoice() {
         setCopiedData(copiedData[0]);
       
         console.log("Copied Data Found !!!!!!!!!!");
-        console.log(copiedData[0].tableData);
+        console.log(copiedData[0]);
         console.log("=================UserName==================");
         console.log(copiedData[0].UserName);
         // Pre-fill the fields with the copied data
@@ -161,8 +161,8 @@ function Invoice() {
     fileInput.click();
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = async (event) => {
+    const file =await event.target.files[0];
 
     // Error handling: Ensure a file is selected
     if (!file) {
@@ -171,10 +171,10 @@ function Invoice() {
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload =  (e) => {
       const base64Image = e.target.result;
       console.log(base64Image)
-      setImageState(base64Image.toString()); // Update imageState with base64 data
+       setImageState(base64Image.toString()); // Update imageState with base64 data
     };
 
     // Validate file type (optional):
@@ -216,7 +216,7 @@ function Invoice() {
         Authorization: `Bearer ${JSON.parse(token).token}`
       }
     };
-    setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy, CompanyLogo: imageState }));
+    await setInvoiceData((prevData) => ({ ...prevData, generatedBy: generatedBy, CompanyLogo: imageState }));
     console.log("---------------------------------------------------------------------------------------------------------------------");
     // https://invoice-generator-server.vercel.app
     //http://localhost:8000

@@ -33,12 +33,7 @@ function SideMenuBar() {
                         <Link to="/draftInvoice" className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200  hover:scale-105 duration-100  hover:text-sky-950">
                             Draft Invoices
                         </Link>
-                        <Link to='/newInvoice' className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200   hover:scale-105 duration-100  hover:text-sky-950">
-                            Company B
-                        </Link>
-                        <Link to='/history'className="sideBarListItem p-[5px] cursor-pointer flex flex-row items-center rounded-[10px] hover:bg-blue-200   hover:scale-105 duration-100  hover:text-sky-950">
-                            Company C
-                        </Link>
+                       
                     </ul>
                 </div>
 
