@@ -94,19 +94,37 @@ function HistoryInvoices() {
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'UserName', headerName: 'UserName', width: 150 },
+        { field: 'UserName', headerName: 'Client Name', width: 150 },
         { field: 'CompanyName' || 'companyName', headerName: 'Company Name', width: 170 },
-        { field: 'UserContact', headerName: 'UserContact', width: 100 },
+        { field: 'UserContact', headerName: 'Client Contact', width: 160 },
+        {
+            field:'status',
+            headerName:'Current Status',
+            width:120,
+            renderCell:(params)=>{
+                if(params.row.status==='unpaid'){
+                    return (<div className='flex flex-row w-fit h-full items-center'><div className="flex flex-row items-center justify-center bg-red-400 m-1 h-[50%] text-center p-2 rounded-lg font-medium text-red-950 cursor-pointer">{(params.row.status).toUpperCase()}</div></div>)
+                }
+                else if(params.row.status==='paid'){
+                    // console.log(params);
+                    return(<div className='flex flex-row w-fit h-full items-center'><div className="flex flex-row items-center justify-center bg-green-400 m-1 h-[50%] text-center p-2 rounded-lg font-medium text-green-950 cursor-pointer">{(params.row.status).toUpperCase()}</div></div>)
+                }
+                else if(params.row.status==='sent'){
+                    // console.log(params);
+                    return(<div className='flex flex-row w-fit h-full items-center'><div className="flex flex-row items-center justify-center bg-blue-400 m-1 h-[50%] text-center p-2 rounded-lg font-medium text-blue-950 cursor-pointer">{params.row.status}</div></div>)
+                }
+            }
+        },
         {
             field: 'Current Status',
             headerName: 'Action',
             width: 150,
             renderCell: (params) => {
                 return (
-                    <div className='flex flex-row w-fit h-full'>
-                        <button className='bg flex flex-row items-center justify-center bg-green-300 m-1 h-[50%] text-center w-[40%] p-2 rounded-lg font-medium' onClick={()=>{copyInvoice(params)}}>Copy</button>
+                    <div className='flex flex-row w-fit h-full items-center'>
+                        <button className='bg flex flex-row items-center justify-center bg-green-300 m-1 h-[50%] text-center w-[40%] px-2 rounded-lg font-medium text-green-950' onClick={()=>{copyInvoice(params)}}>Copy</button>
 
-                        <button className='bg flex flex-row items-center justify-center bg-red-300 m-1 h-[50%] text-center w-[40%] p-2 rounded-lg font-medium' onClick={async()=>{console.log(params.row._id);await setDelInvoiceID(params.row._id);setTimeout(()=>{handleDeleteinVoice()},1000)}}>Delete</button>
+                        <button className='bg flex flex-row items-center justify-center bg-red-300 m-1 h-[50%] text-center w-[40%] px-2 rounded-lg font-medium text-red-950' onClick={async()=>{console.log(params.row._id);await setDelInvoiceID(params.row._id);setTimeout(()=>{handleDeleteinVoice()},1000)}}>Delete</button>
                     </div>
                 )
             }
@@ -115,7 +133,6 @@ function HistoryInvoices() {
 
     const handleDeleteinVoice = async () => {
         const token = localStorage.getItem('token');
-        // console.log(deluserID)
         console.log("Req Recived For Deleting Company With ID : ", delInvoiceID);
         const config = {
           headers: {
@@ -145,7 +162,7 @@ function HistoryInvoices() {
                     {tableData && <DataGrid
                         rows={tableData}
                         getRowId={(row) => row.id}
-                        className='bg-slate-100 text-yellow-100'
+                        className='bg-slate-100 text-yellow-100 w-full'
                         columns={columns}
                         initialState={{
                             pagination: {

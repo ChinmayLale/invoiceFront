@@ -137,6 +137,7 @@ function Invoice() {
       TotalBillAmount: taxableAmount,
       TotalQuantity: totalQuantity,
       taxableAmount: taxableAmount,
+      status:'unpaid',
       generatedBy: generatedBy ? generatedBy : addGeneratedBy()
     }));
   };
@@ -316,7 +317,8 @@ function Invoice() {
 
 
 
-  // =====================================calculating Total amount=============================================================
+  // =====================================calculating Total amount====================================================================
+
   useEffect(() => {
     const calculateTotalAmount = () => {
       const total = tableData.reduce((acc, row) => acc + parseFloat(row.itemAmount || 0), 0);
